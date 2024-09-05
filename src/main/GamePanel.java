@@ -15,7 +15,7 @@ public class GamePanel extends JPanel {
     public TileManager tileManager = new TileManager(this);
 
     public KeyHandler keyHandler = new KeyHandler();
-    Player player = new Player(this);
+    public Player player = new Player(this);
 
     public CollisionChecker collisionChecker = new CollisionChecker(this);
 

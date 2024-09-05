@@ -48,6 +48,10 @@ public class DiscreteMapPosition {
         return DiscreteMap.getMapPosition(this.x + 1, this.y);
     }
 
+    public int distanceTo(DiscreteMapPosition other) {
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+    }
+
     @Override
     public String toString() {
         return "DiscreteMapPosition{" +

@@ -19,6 +19,8 @@ public class Player implements Drawable {
     private String direction;
     private boolean collision = false;
 
+    public final int visibilityRadius = 6;
+
     public Player(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }

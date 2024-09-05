@@ -8,7 +8,7 @@ public final class DiscreteMap {
 
     // Map corners
     public static final DiscreteMapPosition southWest = new DiscreteMapPosition(
-             1, maxScreenRow - 2
+            1, maxScreenRow - 2
     );
     public static final DiscreteMapPosition northEast = new DiscreteMapPosition(
             maxScreenCol - 2, 1

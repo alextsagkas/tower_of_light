@@ -1,5 +1,6 @@
 package tile;
 
+import characters.Player;
 import main.GamePanel;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
@@ -17,6 +18,7 @@ public class TileManager {
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.mapTiles = new Tile[DiscreteMap.maxScreenRow][DiscreteMap.maxScreenCol];
+        loadMap();
     }
 
     public Tile getTile(DiscreteMapPosition position) {
@@ -24,6 +26,7 @@ public class TileManager {
     }
 
     private void loadMap() throws RuntimeException {
+        System.out.println("Loading Map");
         String levelPath = "/map/levels/level" + gamePanel.getGameLevel() + ".txt";
 
         try (InputStream is = getClass().getResourceAsStream(levelPath)) {
@@ -45,11 +48,23 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2d) {
-        loadMap();
-
         for (Tile[] rowOfTiles : this.mapTiles) {
             for (Tile tile : rowOfTiles) {
-                Objects.requireNonNull(tile).drawVisible(g2d);
+                Player player = gamePanel.player;
+                DiscreteMapPosition playerPosition = player.getPosition();
+
+                int distanceToTile = tile.getPosition().distanceTo(playerPosition);
+
+                if (distanceToTile <= player.visibilityRadius) {
+                    tile.setVisible(true);
+                    if (!(tile.isDiscovered())) {
+                        tile.setDiscovered(true);
+                    }
+                } else {
+                    tile.setVisible(false);
+                }
+
+                tile.draw(g2d);
             }
         }
     }

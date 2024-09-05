@@ -6,7 +6,7 @@ import map.Drawable;
 
 import java.awt.*;
 
-abstract public class Tile {
+abstract public class Tile implements Drawable {
     private final DiscreteMapPosition discreteMapPosition;
 
     public static final int inner_shift = 1;
@@ -18,9 +18,13 @@ abstract public class Tile {
 
     private boolean collision;
 
+    private boolean discovered;
+    private boolean visible;
+
     public Tile(DiscreteMapPosition discreteMapPosition) {
         this.discreteMapPosition = discreteMapPosition;
 
+        discovered = false;
         undiscoveredColor = new Color(0x0f172a);
     }
 
@@ -51,7 +55,23 @@ abstract public class Tile {
         visibleColor = color;
     }
 
-    private void draw(
+    public DiscreteMapPosition getPosition() {
+        return discreteMapPosition;
+    }
+
+    public boolean isDiscovered() {
+        return discovered;
+    }
+
+    public void setDiscovered(boolean discovered) {
+        this.discovered = discovered;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    private void drawGeneric(
             Graphics2D g2d,
             Color innerColor
     ) {
@@ -71,22 +91,33 @@ abstract public class Tile {
         g2d.fillRect(x_innerPos, y_innerPos, innerTileSize, innerTileSize);
     }
 
-    public void drawUndiscovered(Graphics2D g2d) {
-        draw(g2d, undiscoveredColor);
+    private void drawUndiscovered(Graphics2D g2d) {
+        drawGeneric(g2d, undiscoveredColor);
     }
 
-    public void drawInvisible(Graphics2D g2d) {
-        draw(g2d, invisibleColor);
+    private void drawInvisible(Graphics2D g2d) {
+        drawGeneric(g2d, invisibleColor);
     }
 
-    public void drawVisible(Graphics2D g2d) {
-        draw(g2d, visibleColor);
+    private void drawVisible(Graphics2D g2d) {
+        drawGeneric(g2d, visibleColor);
+    }
+
+    public void draw(Graphics2D g2d) {
+        if (visible) {
+            drawVisible(g2d);
+        } else if (discovered) {
+            drawInvisible(g2d);
+        } else {
+            drawUndiscovered(g2d);
+        }
     }
 
     @Override
     public String toString() {
         return "Tile{" +
                 "discreteMapPosition=" + discreteMapPosition +
+                "discovered=" + discovered +
                 '}';
     }
 }
