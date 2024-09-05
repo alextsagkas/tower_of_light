@@ -1,6 +1,8 @@
 package tile;
 
 import main.GamePanel;
+import map.DiscreteMap;
+import map.DiscreteMapPosition;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -14,21 +16,27 @@ public class TileManager {
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        this.mapTiles = new Tile[this.gamePanel.getMaxScreenRow()][this.gamePanel.getMaxScreenCol()];
+        this.mapTiles = new Tile[DiscreteMap.maxScreenRow][DiscreteMap.maxScreenCol];
+    }
+
+    public Tile getTile(DiscreteMapPosition position) {
+        return mapTiles[position.getY()][position.getX()];
     }
 
     private void loadMap() throws RuntimeException {
-        String levelPath = "/map/level" + gamePanel.getGameLevel() + ".txt";
+        String levelPath = "/map/levels/level" + gamePanel.getGameLevel() + ".txt";
 
         try (InputStream is = getClass().getResourceAsStream(levelPath)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
 
-            for (int row = 0; row < this.gamePanel.getMaxScreenRow(); row++) {
+            for (int row = 0; row < DiscreteMap.maxScreenRow; row++) {
                 String[] tileTypes = reader.readLine().split(" ");
 
-                for (int col = 0; col < this.gamePanel.getMaxScreenCol(); col++) {
+                for (int col = 0; col < DiscreteMap.maxScreenCol; col++) {
                     TileType tileType = TileType.fromInteger(Integer.parseInt(tileTypes[col]));
-                    mapTiles[row][col] = Tile.createTile(tileType, col, row, gamePanel.getTileSize());
+                    mapTiles[row][col] = Tile.createTile(
+                            tileType,
+                            DiscreteMap.getMapPosition(col, row));
                 }
             }
         } catch (Exception e) {

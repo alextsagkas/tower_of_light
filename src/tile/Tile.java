@@ -1,39 +1,46 @@
 package tile;
 
+import map.DiscreteMap;
+import map.DiscreteMapPosition;
+import map.Drawable;
+
 import java.awt.*;
 
 abstract public class Tile {
-    private final int x;
-    private final int y;
-    private final int tileSize;
-    private final int inner_shift;
+    private final DiscreteMapPosition discreteMapPosition;
 
-    private final Color borderColor;
+    public static final int inner_shift = 1;
+
+    public static final Color borderColor = new Color(0x020617);
     private final Color undiscoveredColor;
     private Color invisibleColor;
     private Color visibleColor;
 
-    public Tile(int x, int y, int tileSize) {
-        this.x = x;
-        this.y = y;
-        this.tileSize = tileSize;
+    private boolean collision;
 
-        inner_shift = 1;
-        borderColor = new Color(0x020617);
+    public Tile(DiscreteMapPosition discreteMapPosition) {
+        this.discreteMapPosition = discreteMapPosition;
+
         undiscoveredColor = new Color(0x0f172a);
     }
 
     public static Tile createTile(
             TileType tileType,
-            int x,
-            int y,
-            int tileSize
+            DiscreteMapPosition discreteMapPosition
     ) {
         return switch (tileType) {
-            case TileType.FloorTile -> new FloorTile(x,y,tileSize);
-            case TileType.WallTile -> new WallTile(x,y,tileSize);
+            case TileType.FloorTile -> new FloorTile(discreteMapPosition);
+            case TileType.WallTile -> new WallTile(discreteMapPosition);
             case null -> null;
         };
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public boolean getCollision() {
+        return collision;
     }
 
     protected void setInvisibleColor(Color color) {
@@ -49,30 +56,37 @@ abstract public class Tile {
             Color innerColor
     ) {
         // Border
-        int x_pos = x * tileSize;
-        int y_pos = y * tileSize;
+        int x_pos = discreteMapPosition.getX_map();
+        int y_pos = discreteMapPosition.getY_map();
 
         g2d.setColor(borderColor);
-        g2d.fillRect(x_pos, y_pos, tileSize, tileSize);
+        g2d.fillRect(x_pos, y_pos, DiscreteMap.tileSize, DiscreteMap.tileSize);
 
         // Inner fill
         int x_innerPos = x_pos + inner_shift;
         int y_innerPos = y_pos + inner_shift;
-        int innerTileSize = tileSize - 2 * inner_shift;
+        int innerTileSize = DiscreteMap.tileSize - 2 * inner_shift;
 
         g2d.setColor(innerColor);
         g2d.fillRect(x_innerPos, y_innerPos, innerTileSize, innerTileSize);
     }
 
-    public void drawUndiscovered(Graphics2D g2d){
+    public void drawUndiscovered(Graphics2D g2d) {
         draw(g2d, undiscoveredColor);
     }
 
-    public void drawInvisible(Graphics2D g2d){
+    public void drawInvisible(Graphics2D g2d) {
         draw(g2d, invisibleColor);
     }
 
-    public void drawVisible(Graphics2D g2d){
+    public void drawVisible(Graphics2D g2d) {
         draw(g2d, visibleColor);
+    }
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "discreteMapPosition=" + discreteMapPosition +
+                '}';
     }
 }

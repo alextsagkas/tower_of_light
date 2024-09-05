@@ -15,8 +15,12 @@ public class Main {
 
         window.pack();
 
+        // Settings
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null); // display at the center of the screen
         window.setVisible(true);
+
+        // Start game
+        gamePanel.startGame();
     }
 }
