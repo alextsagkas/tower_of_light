@@ -9,24 +9,33 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TileManager {
     GamePanel gamePanel;
     Tile[][] mapTiles;
+    List<Tile> spellTiles;
+
+    final int spellTileSeparation = 20;
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.mapTiles = new Tile[DiscreteMap.maxScreenRow][DiscreteMap.maxScreenCol];
         loadMap();
+        this.spellTiles = new ArrayList<>();
     }
 
     public Tile getTile(DiscreteMapPosition position) {
         return mapTiles[position.getY()][position.getX()];
     }
 
+    public void setTile(DiscreteMapPosition position, Tile tile) {
+        mapTiles[position.getY()][position.getX()] = tile;
+    }
+
     private void loadMap() throws RuntimeException {
-        System.out.println("Loading Map");
         String levelPath = "/map/levels/level" + gamePanel.getGameLevel() + ".txt";
 
         try (InputStream is = getClass().getResourceAsStream(levelPath)) {
@@ -47,14 +56,14 @@ public class TileManager {
         }
     }
 
-    public void draw(Graphics2D g2d) {
+    public void update() {
+        Player player = gamePanel.player;
+        DiscreteMapPosition playerPosition = player.getPosition();
+
+        // Visibility
         for (Tile[] rowOfTiles : this.mapTiles) {
             for (Tile tile : rowOfTiles) {
-                Player player = gamePanel.player;
-                DiscreteMapPosition playerPosition = player.getPosition();
-
                 int distanceToTile = tile.getPosition().distanceTo(playerPosition);
-
                 if (distanceToTile <= player.visibilityRadius) {
                     tile.setVisible(true);
                     if (!(tile.isDiscovered())) {
@@ -63,7 +72,32 @@ public class TileManager {
                 } else {
                     tile.setVisible(false);
                 }
+            }
+        }
 
+        // Spells
+        final int maxSpellTiles = 3;
+
+        if (gamePanel.keyHandler.castSpell) {
+            Tile spellTile = getTile(playerPosition);
+            boolean separateTiles = spellTiles.
+                    stream().
+                    allMatch(
+                            tile -> tile.
+                                    getPosition().
+                                    distanceTo(playerPosition) > spellTileSeparation
+                    );
+
+            if (separateTiles && spellTiles.size() < maxSpellTiles) {
+                setTile(playerPosition, new SpellTileDecorator(spellTile));
+                spellTiles.add(spellTile);
+            }
+        }
+    }
+
+    public void draw(Graphics2D g2d) {
+        for (Tile[] rowOfTiles : this.mapTiles) {
+            for (Tile tile : rowOfTiles) {
                 tile.draw(g2d);
             }
         }

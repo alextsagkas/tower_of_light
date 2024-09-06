@@ -16,7 +16,7 @@ public class Player implements Drawable {
     private final Color borderColor = Tile.borderColor;
     private final Color playerColor = new Color(0xf1f5f9);
 
-    private String direction;
+    private String direction = "";
     private boolean collision = false;
 
     public final int visibilityRadius = 6;
@@ -71,6 +71,8 @@ public class Player implements Drawable {
             direction = "left";
         } else if (gamePanel.keyHandler.rightPressed) {
             direction = "right";
+        } else {
+            direction = "";
         }
 
         collision = false;

@@ -116,8 +116,9 @@ abstract public class Tile implements Drawable {
     @Override
     public String toString() {
         return "Tile{" +
-                "discreteMapPosition=" + discreteMapPosition +
-                "discovered=" + discovered +
+                "visible=" + visible +
+                ", discovered=" + discovered +
+                ", discreteMapPosition=" + discreteMapPosition +
                 '}';
     }
 }

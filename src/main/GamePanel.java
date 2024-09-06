@@ -59,6 +59,7 @@ public class GamePanel extends JPanel {
 
     public void update() {
         player.update();
+        tileManager.update();
     }
 
     public void paintComponent(Graphics g) {

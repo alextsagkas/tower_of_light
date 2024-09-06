@@ -6,7 +6,8 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
-    public boolean advanceTime = false;
+    public boolean castSpell;
+    public boolean advanceTime = true;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -19,17 +20,22 @@ public class KeyHandler implements KeyListener {
 
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_W) {
-            upPressed = true;
-        }
-        if (keyCode == KeyEvent.VK_S) {
-            downPressed = true;
-        }
-        if (keyCode == KeyEvent.VK_A) {
-            leftPressed = true;
-        }
-        if (keyCode == KeyEvent.VK_D) {
-            rightPressed = true;
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+                upPressed = true;
+                break;
+            case KeyEvent.VK_S:
+                downPressed = true;
+                break;
+            case KeyEvent.VK_A:
+                leftPressed = true;
+                break;
+            case KeyEvent.VK_D:
+                rightPressed = true;
+                break;
+            case KeyEvent.VK_X:
+                castSpell = true;
+                break;
         }
     }
 
@@ -39,18 +45,22 @@ public class KeyHandler implements KeyListener {
 
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_W) {
-            upPressed = false;
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+                upPressed = false;
+                break;
+            case KeyEvent.VK_S:
+                downPressed = false;
+                break;
+            case KeyEvent.VK_A:
+                leftPressed = false;
+                break;
+            case KeyEvent.VK_D:
+                rightPressed = false;
+                break;
+            case KeyEvent.VK_X:
+                castSpell = false;
+                break;
         }
-        if (keyCode == KeyEvent.VK_S) {
-            downPressed = false;
-        }
-        if (keyCode == KeyEvent.VK_A) {
-            leftPressed = false;
-        }
-        if (keyCode == KeyEvent.VK_D) {
-            rightPressed = false;
-        }
-
     }
 }
