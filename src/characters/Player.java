@@ -1,6 +1,7 @@
 package characters;
 
 import main.GamePanel;
+import main.colors.UIColors;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
 import map.Drawable;
@@ -12,9 +13,6 @@ public class Player implements Drawable {
     private final GamePanel gamePanel;
 
     private DiscreteMapPosition playerPos = DiscreteMap.southWest;
-
-    private final Color borderColor = Tile.borderColor;
-    private final Color playerColor = new Color(0xf1f5f9);
 
     private String direction = "";
     private boolean collision = false;
@@ -94,7 +92,7 @@ public class Player implements Drawable {
         int x_pos = playerPos.getX_map();
         int y_pos = playerPos.getY_map();
 
-        g2d.setColor(borderColor);
+        g2d.setColor(UIColors.borderColor);
         g2d.fillRect(x_pos, y_pos, DiscreteMap.tileSize, DiscreteMap.tileSize);
 
         // Inner fill
@@ -102,7 +100,7 @@ public class Player implements Drawable {
         int y_innerPos = y_pos + Tile.inner_shift;
         int innerTileSize = DiscreteMap.tileSize - 2 * Tile.inner_shift;
 
-        g2d.setColor(playerColor);
+        g2d.setColor(UIColors.playerColor);
         g2d.fillRect(x_innerPos, y_innerPos, innerTileSize, innerTileSize);
     }
 

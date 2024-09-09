@@ -1,5 +1,6 @@
 package tile;
 
+import main.colors.UIColors;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
 import map.Drawable;
@@ -10,9 +11,6 @@ abstract public class Tile implements Drawable {
     private final DiscreteMapPosition discreteMapPosition;
 
     public static final int inner_shift = 1;
-
-    public static final Color borderColor = new Color(0x020617);
-    private final Color undiscoveredColor;
     private Color invisibleColor;
     private Color visibleColor;
 
@@ -23,9 +21,7 @@ abstract public class Tile implements Drawable {
 
     public Tile(DiscreteMapPosition discreteMapPosition) {
         this.discreteMapPosition = discreteMapPosition;
-
         discovered = false;
-        undiscoveredColor = new Color(0x0f172a);
     }
 
     public static Tile createTile(
@@ -79,7 +75,7 @@ abstract public class Tile implements Drawable {
         int x_pos = discreteMapPosition.getX_map();
         int y_pos = discreteMapPosition.getY_map();
 
-        g2d.setColor(borderColor);
+        g2d.setColor(UIColors.borderColor);
         g2d.fillRect(x_pos, y_pos, DiscreteMap.tileSize, DiscreteMap.tileSize);
 
         // Inner fill
@@ -92,7 +88,7 @@ abstract public class Tile implements Drawable {
     }
 
     private void drawUndiscovered(Graphics2D g2d) {
-        drawGeneric(g2d, undiscoveredColor);
+        drawGeneric(g2d, UIColors.undiscoveredColor);
     }
 
     private void drawInvisible(Graphics2D g2d) {

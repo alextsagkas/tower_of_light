@@ -1,6 +1,7 @@
 package main;
 
 import characters.Player;
+import main.colors.UIColors;
 import map.DiscreteMap;
 import tile.TileManager;
 
@@ -39,7 +40,7 @@ public class GamePanel extends JPanel {
         final int screenWidth = DiscreteMap.tileSize * DiscreteMap.maxScreenCol;
 
         setPreferredSize(new Dimension(screenWidth, screenHeight));
-        setBackground(Color.WHITE);
+        setBackground(UIColors.backgroundColor);
 
         addKeyListener(keyHandler);
         setFocusable(true);

@@ -1,12 +1,12 @@
 package tile;
 
-import java.awt.*;
+import main.colors.UIColors;
 
 public class ExitTileDecorator extends TileDecorator {
     public ExitTileDecorator(Tile tile) {
         super(tile);
 
-        tile.setInvisibleColor(new Color(190, 242, 100));
-        tile.setVisibleColor(new Color(217, 249, 157));
+        tile.setInvisibleColor(UIColors.exitTileInvisibleColor);
+        tile.setVisibleColor(UIColors.exitTileVisibleColor);
     }
 }

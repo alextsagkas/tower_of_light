@@ -1,12 +1,12 @@
 package tile;
 
-import java.awt.*;
+import main.colors.UIColors;
 
 public class SpellTileDecorator extends TileDecorator {
     public SpellTileDecorator(Tile tile) {
         super(tile);
 
-        tile.setInvisibleColor(new Color(217, 119, 6));
-        tile.setVisibleColor(new Color(245, 158, 11));
+        tile.setInvisibleColor(UIColors.spellTileInvisibleColor);
+        tile.setVisibleColor(UIColors.spellTileVisibleColor);
     }
 }
