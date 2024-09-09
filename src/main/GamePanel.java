@@ -26,6 +26,11 @@ public class GamePanel extends JPanel {
 
     // Setters
     public void setGameLevel(int gameLevel) {
+        if (gameLevel > 6) {
+            this.gameLevel = 6;
+            return;
+        }
+
         this.gameLevel = gameLevel;
     }
 

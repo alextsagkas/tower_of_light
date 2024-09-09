@@ -48,6 +48,24 @@ public class DiscreteMapPosition {
         return DiscreteMap.getMapPosition(this.x + 1, this.y);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DiscreteMapPosition that = (DiscreteMapPosition) o;
+        return getX_map() == that.getX_map() && getX() == that.getX() && getY_map() == that.getY_map() && getY() == that.getY();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getX_map();
+        result = 31 * result + getX();
+        result = 31 * result + getY_map();
+        result = 31 * result + getY();
+        return result;
+    }
+
     public int distanceTo(DiscreteMapPosition other) {
         return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }

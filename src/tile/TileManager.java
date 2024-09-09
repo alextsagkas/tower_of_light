@@ -56,6 +56,11 @@ public class TileManager {
         }
     }
 
+    private void reset() {
+        spellTiles.clear();
+        loadMap();
+    }
+
     public void update() {
         Player player = gamePanel.player;
         DiscreteMapPosition playerPosition = player.getPosition();
@@ -92,6 +97,25 @@ public class TileManager {
                 setTile(playerPosition, new SpellTileDecorator(spellTile));
                 spellTiles.add(spellTile);
             }
+
+            if (spellTiles.size() == maxSpellTiles) {
+                Tile exitTile = getTile(DiscreteMap.northEast);
+                setTile(exitTile.getPosition(), new ExitTileDecorator(exitTile));
+
+                for (Tile[] rowOfTiles : this.mapTiles) {
+                    for (Tile tile : rowOfTiles) {
+                        tile.setDiscovered(true);
+                        setTile(tile.getPosition(), new LightTileDecorator(tile));
+                    }
+                }
+            }
+        }
+
+        // Level update
+        if (playerPosition.equals(DiscreteMap.northEast) && spellTiles.size() == maxSpellTiles) {
+            gamePanel.setGameLevel(gamePanel.getGameLevel() + 1);
+            gamePanel.player.setPosition(DiscreteMap.southWest);
+            reset();
         }
     }
 
