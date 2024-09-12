@@ -20,7 +20,16 @@ public class Main {
         window.setLocationRelativeTo(null); // display at the center of the screen
         window.setVisible(true);
 
-        // Start game
-        gamePanel.startGame();
+        // Exit the game only through a dialog
+        while (true) {
+            // Start game
+            gamePanel.startGame();
+
+            // Dialogs
+            if (gamePanel.isWin()) {
+                Dialog winDialog = new Dialog(gamePanel);
+                winDialog.showWinDialog(window);
+            }
+        }
     }
 }

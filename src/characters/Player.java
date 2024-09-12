@@ -60,6 +60,12 @@ public class Player implements Drawable {
         setPosition(DiscreteMap.getMapPosition(playerPos.getX() - 1, playerPos.getY()));
     }
 
+    public void reset() {
+        direction = "";
+        collision = false;
+        setPosition(DiscreteMap.southWest);
+    }
+
     public void update() {
         if (gamePanel.keyHandler.upPressed) {
             direction = "up";

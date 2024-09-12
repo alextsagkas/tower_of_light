@@ -3,6 +3,7 @@ package main;
 import characters.Player;
 import main.colors.UIColors;
 import map.DiscreteMap;
+import map.DiscreteMapPosition;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -11,6 +12,8 @@ import java.awt.*;
 public class GamePanel extends JPanel {
     // Game state
     private int gameLevel = 1;
+    public final int maxGameLevel = 6;
+    private boolean win = false;
 
     // Instances of other classes
     public TileManager tileManager = new TileManager(this);
@@ -25,14 +28,13 @@ public class GamePanel extends JPanel {
         return gameLevel;
     }
 
-    // Setters
-    public void setGameLevel(int gameLevel) {
-        if (gameLevel > 6) {
-            this.gameLevel = 6;
-            return;
-        }
+    public boolean isWin() {
+        return win;
+    }
 
-        this.gameLevel = gameLevel;
+    // Setters
+    public void setWin(boolean win) {
+        this.win = win;
     }
 
     public GamePanel() {
@@ -47,7 +49,7 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
-        while (gameLevel <= 6) {
+        while (!win) {
             if (keyHandler.advanceTime) {
                 // Update information about the game
                 update();
@@ -63,9 +65,37 @@ public class GamePanel extends JPanel {
         }
     }
 
-    public void update() {
+    private void reset_components() {
+        player.reset();
+        tileManager.reset();
+    }
+
+    private void update_components() {
         player.update();
         tileManager.update();
+    }
+
+    private void update() {
+        update_components();
+
+        DiscreteMapPosition playerPosition = player.getPosition();
+
+        if (playerPosition.equals(DiscreteMap.northEast) && tileManager.getSpellTilesSize() == tileManager.maxSpellTiles) {
+            if (getGameLevel() < maxGameLevel) {
+                gameLevel++;
+                reset_components();
+            } else {
+                setWin(true);
+            }
+        }
+    }
+
+    public void restart() {
+        gameLevel = 1;
+        win = false;
+        reset_components();
+        update_components();
+        keyHandler.advanceTime = true;
     }
 
     public void paintComponent(Graphics g) {

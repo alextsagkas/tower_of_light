@@ -17,6 +17,7 @@ public class TileManager {
     GamePanel gamePanel;
     Tile[][] mapTiles;
     List<Tile> spellTiles;
+    public final int maxSpellTiles = 3;
 
     final int spellTileSeparation = 20;
 
@@ -33,6 +34,10 @@ public class TileManager {
 
     public void setTile(DiscreteMapPosition position, Tile tile) {
         mapTiles[position.getY()][position.getX()] = tile;
+    }
+
+    public int getSpellTilesSize() {
+        return spellTiles.size();
     }
 
     private void loadMap() throws RuntimeException {
@@ -56,19 +61,17 @@ public class TileManager {
         }
     }
 
-    private void reset() {
+    public void reset() {
         spellTiles.clear();
         loadMap();
+        update_visibility();
     }
 
-    public void update() {
+    private void update_visibility() {
         Player player = gamePanel.player;
-        DiscreteMapPosition playerPosition = player.getPosition();
-
-        // Visibility
         for (Tile[] rowOfTiles : this.mapTiles) {
             for (Tile tile : rowOfTiles) {
-                int distanceToTile = tile.getPosition().distanceTo(playerPosition);
+                int distanceToTile = tile.getPosition().distanceTo(player.getPosition());
                 if (distanceToTile <= player.visibilityRadius) {
                     tile.setVisible(true);
                     if (!(tile.isDiscovered())) {
@@ -79,9 +82,10 @@ public class TileManager {
                 }
             }
         }
+    }
 
-        // Spells
-        final int maxSpellTiles = 3;
+    private void update_spells() {
+        DiscreteMapPosition playerPosition = gamePanel.player.getPosition();
 
         if (gamePanel.keyHandler.castSpell) {
             Tile spellTile = getTile(playerPosition);
@@ -111,12 +115,11 @@ public class TileManager {
             }
         }
 
-        // Level update
-        if (playerPosition.equals(DiscreteMap.northEast) && spellTiles.size() == maxSpellTiles) {
-            gamePanel.setGameLevel(gamePanel.getGameLevel() + 1);
-            gamePanel.player.setPosition(DiscreteMap.southWest);
-            reset();
-        }
+    }
+
+    public void update() {
+        update_visibility();
+        update_spells();
     }
 
     public void draw(Graphics2D g2d) {
