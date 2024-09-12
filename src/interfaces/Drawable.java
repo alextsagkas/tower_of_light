@@ -1,4 +1,6 @@
-package map;
+package interfaces;
+
+import map.DiscreteMapPosition;
 
 import java.awt.*;
 

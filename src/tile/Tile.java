@@ -3,7 +3,7 @@ package tile;
 import main.colors.UIColors;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
-import map.Drawable;
+import interfaces.Drawable;
 
 import java.awt.*;
 

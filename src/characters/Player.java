@@ -4,7 +4,7 @@ import main.GamePanel;
 import main.colors.UIColors;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
-import map.Drawable;
+import interfaces.Drawable;
 import tile.Tile;
 
 import java.awt.*;
