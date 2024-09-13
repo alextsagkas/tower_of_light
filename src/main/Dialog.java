@@ -1,9 +1,9 @@
 package main;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
-public class Dialog {
+public final class Dialog {
     private final GamePanel gamePanel;
 
     public Dialog(GamePanel gamePanel) {

@@ -1,13 +1,85 @@
 package main;
 
+import interfaces.Resettable;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class KeyHandler implements KeyListener {
+public final class KeyHandler implements KeyListener, Resettable {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
-    public boolean castSpell;
-    public boolean advanceTime = true;
+    private boolean upPressed, downPressed, leftPressed, rightPressed;
+    private boolean castSpell;
+    private boolean advanceTime;
+
+    public KeyHandler() {
+        super();
+
+        upPressed = false;
+        downPressed = false;
+        leftPressed = false;
+        rightPressed = false;
+
+        castSpell = false;
+
+        advanceTime = false;
+    }
+
+    private void setUpPressed(boolean upPressed) {
+        this.upPressed = upPressed;
+    }
+
+    private void setDownPressed(boolean downPressed) {
+        this.downPressed = downPressed;
+    }
+
+    private void setLeftPressed(boolean leftPressed) {
+        this.leftPressed = leftPressed;
+    }
+
+    private void setRightPressed(boolean rightPressed) {
+        this.rightPressed = rightPressed;
+    }
+
+    private void setCastSpell(boolean castSpell) {
+        this.castSpell = castSpell;
+    }
+
+    private void setAdvanceTime(boolean advanceTime) {
+        this.advanceTime = advanceTime;
+    }
+
+    public boolean isUpPressed() {
+        return upPressed;
+    }
+
+    public boolean isDownPressed() {
+        return downPressed;
+    }
+
+    public boolean isLeftPressed() {
+        return leftPressed;
+    }
+
+    public boolean isRightPressed() {
+        return rightPressed;
+    }
+
+    public boolean isCastSpell() {
+        return castSpell;
+    }
+
+    public boolean isAdvanceTime() {
+        return advanceTime;
+    }
+
+    public void reset() {
+        setUpPressed(false);
+        setDownPressed(false);
+        setLeftPressed(false);
+        setRightPressed(false);
+        setCastSpell(false);
+        setAdvanceTime(false);
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -16,50 +88,54 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        advanceTime = true;
+        setAdvanceTime(true);
 
         int keyCode = e.getKeyCode();
 
         switch (keyCode) {
             case KeyEvent.VK_W:
-                upPressed = true;
+                setUpPressed(true);
                 break;
             case KeyEvent.VK_S:
-                downPressed = true;
+                setDownPressed(true);
                 break;
             case KeyEvent.VK_A:
-                leftPressed = true;
+                setLeftPressed(true);
                 break;
             case KeyEvent.VK_D:
-                rightPressed = true;
+                setRightPressed(true);
                 break;
             case KeyEvent.VK_X:
-                castSpell = true;
+                setCastSpell(true);
+                break;
+            default:
                 break;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        advanceTime = false;
+        setAdvanceTime(false);
 
         int keyCode = e.getKeyCode();
 
         switch (keyCode) {
             case KeyEvent.VK_W:
-                upPressed = false;
+                setUpPressed(false);
                 break;
             case KeyEvent.VK_S:
-                downPressed = false;
+                setDownPressed(false);
                 break;
             case KeyEvent.VK_A:
-                leftPressed = false;
+                setLeftPressed(false);
                 break;
             case KeyEvent.VK_D:
-                rightPressed = false;
+                setRightPressed(false);
                 break;
             case KeyEvent.VK_X:
-                castSpell = false;
+                setCastSpell(false);
+                break;
+            default:
                 break;
         }
     }

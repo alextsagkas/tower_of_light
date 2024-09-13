@@ -1,10 +1,10 @@
-package tile;
+package map.tiles;
 
 import map.DiscreteMapPosition;
 
 import java.awt.*;
 
-public class TileDecorator extends Tile {
+abstract public class TileDecorator extends Tile {
     Tile tile;
 
     public TileDecorator(Tile tile) {
@@ -32,12 +32,12 @@ public class TileDecorator extends Tile {
     }
 
     @Override
-    protected void setInvisibleColor(Color color) {
+    public void setInvisibleColor(Color color) {
         tile.setInvisibleColor(color);
     }
 
     @Override
-    protected void setVisibleColor(Color color) {
+    public void setVisibleColor(Color color) {
         tile.setVisibleColor(color);
     }
 
@@ -62,7 +62,22 @@ public class TileDecorator extends Tile {
     }
 
     @Override
+    public boolean isVisible() {
+        return tile.isVisible();
+    }
+
+    @Override
+    public void toLight() {
+        tile.toLight();
+    }
+
+    @Override
     public void draw(Graphics2D g2d) {
         tile.draw(g2d);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

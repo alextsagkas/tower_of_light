@@ -1,4 +1,4 @@
-package tile;
+package map.tiles;
 
 public enum TileType {
     FloorTile,

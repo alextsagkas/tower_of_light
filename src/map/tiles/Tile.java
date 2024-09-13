@@ -1,16 +1,17 @@
-package tile;
+package map.tiles;
 
-import main.colors.UIColors;
-import map.DiscreteMap;
-import map.DiscreteMapPosition;
 import interfaces.Drawable;
+import map.DiscreteMapPosition;
+import map.tiles.types.FloorTile;
+import map.tiles.types.WallTile;
+import ui.Colors;
+import ui.Render;
 
 import java.awt.*;
 
 abstract public class Tile implements Drawable {
     private final DiscreteMapPosition discreteMapPosition;
 
-    public static final int inner_shift = 1;
     private Color invisibleColor;
     private Color visibleColor;
 
@@ -21,7 +22,8 @@ abstract public class Tile implements Drawable {
 
     public Tile(DiscreteMapPosition discreteMapPosition) {
         this.discreteMapPosition = discreteMapPosition;
-        discovered = false;
+        this.discovered = false;
+        this.visible = false;
     }
 
     public static Tile createTile(
@@ -31,7 +33,6 @@ abstract public class Tile implements Drawable {
         return switch (tileType) {
             case TileType.FloorTile -> new FloorTile(discreteMapPosition);
             case TileType.WallTile -> new WallTile(discreteMapPosition);
-            case null -> null;
         };
     }
 
@@ -43,11 +44,11 @@ abstract public class Tile implements Drawable {
         return collision;
     }
 
-    protected void setInvisibleColor(Color color) {
+    public void setInvisibleColor(Color color) {
         invisibleColor = color;
     }
 
-    protected void setVisibleColor(Color color) {
+    public void setVisibleColor(Color color) {
         visibleColor = color;
     }
 
@@ -67,42 +68,28 @@ abstract public class Tile implements Drawable {
         this.visible = visible;
     }
 
-    private void drawGeneric(
-            Graphics2D g2d,
-            Color innerColor
-    ) {
-        // Border
-        int x_pos = discreteMapPosition.getX_map();
-        int y_pos = discreteMapPosition.getY_map();
-
-        g2d.setColor(UIColors.borderColor);
-        g2d.fillRect(x_pos, y_pos, DiscreteMap.tileSize, DiscreteMap.tileSize);
-
-        // Inner fill
-        int x_innerPos = x_pos + inner_shift;
-        int y_innerPos = y_pos + inner_shift;
-        int innerTileSize = DiscreteMap.tileSize - 2 * inner_shift;
-
-        g2d.setColor(innerColor);
-        g2d.fillRect(x_innerPos, y_innerPos, innerTileSize, innerTileSize);
+    public boolean isVisible() {
+        return visible;
     }
 
+    public void toLight() {}
+
     private void drawUndiscovered(Graphics2D g2d) {
-        drawGeneric(g2d, UIColors.undiscoveredColor);
+        Render.drawRectangle(g2d, discreteMapPosition, Colors.undiscoveredColor);
     }
 
     private void drawInvisible(Graphics2D g2d) {
-        drawGeneric(g2d, invisibleColor);
+        Render.drawRectangle(g2d, discreteMapPosition, invisibleColor);
     }
 
     private void drawVisible(Graphics2D g2d) {
-        drawGeneric(g2d, visibleColor);
+        Render.drawRectangle(g2d, discreteMapPosition, visibleColor);
     }
 
     public void draw(Graphics2D g2d) {
-        if (visible) {
+        if (isVisible()) {
             drawVisible(g2d);
-        } else if (discovered) {
+        } else if (isDiscovered()) {
             drawInvisible(g2d);
         } else {
             drawUndiscovered(g2d);

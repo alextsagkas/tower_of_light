@@ -1,56 +1,71 @@
 package main;
 
+import characters.CollisionChecker;
 import characters.Player;
-import main.colors.UIColors;
+import interfaces.Resettable;
+import interfaces.Updatable;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
-import tile.TileManager;
+import map.tiles.TileManager;
+import ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GamePanel extends JPanel {
-    // Game state
-    private int gameLevel = 1;
-    public final int maxGameLevel = 6;
-    private boolean win = false;
+public final class GamePanel extends JPanel implements Updatable, Resettable {
+    private int gameLevel;
+    public final int maxGameLevel;
+    private boolean win;
 
-    // Instances of other classes
-    public TileManager tileManager = new TileManager(this);
+    public TileManager tileManager;
+    public KeyHandler keyHandler;
+    public Player player;
+    public CollisionChecker collisionChecker;
 
-    public KeyHandler keyHandler = new KeyHandler();
-    public Player player = new Player(this);
+    public GamePanel() {
+        // Initialize attributes
+        gameLevel = 1;
+        maxGameLevel = 6;
+        win = false;
 
-    public CollisionChecker collisionChecker = new CollisionChecker(this);
+        tileManager = new TileManager(this);
+        keyHandler = new KeyHandler();
+        player = new Player(this);
+        collisionChecker = new CollisionChecker(this);
 
-    // Getters
+        // JPanel Settings
+        final int screenHeight = DiscreteMap.tileSize * DiscreteMap.maxScreenRow;
+        final int screenWidth = DiscreteMap.tileSize * DiscreteMap.maxScreenCol;
+
+        setPreferredSize(new Dimension(screenWidth, screenHeight));
+        setBackground(Colors.backgroundColor);
+
+        addKeyListener(keyHandler);
+        setFocusable(true);
+
+        // Update State
+        update();
+    }
+
     public int getGameLevel() {
         return gameLevel;
+    }
+
+    private void setGameLevel(int gameLevel) {
+        this.gameLevel = gameLevel;
     }
 
     public boolean isWin() {
         return win;
     }
 
-    // Setters
-    public void setWin(boolean win) {
+    private void setWin(boolean win) {
         this.win = win;
-    }
-
-    public GamePanel() {
-        final int screenHeight = DiscreteMap.tileSize * DiscreteMap.maxScreenRow;
-        final int screenWidth = DiscreteMap.tileSize * DiscreteMap.maxScreenCol;
-
-        setPreferredSize(new Dimension(screenWidth, screenHeight));
-        setBackground(UIColors.backgroundColor);
-
-        addKeyListener(keyHandler);
-        setFocusable(true);
     }
 
     public void startGame() {
         while (!win) {
-            if (keyHandler.advanceTime) {
+            if (keyHandler.isAdvanceTime()) {
                 // Update information about the game
                 update();
                 // Draw the screen with updated information
@@ -68,6 +83,7 @@ public class GamePanel extends JPanel {
     private void reset_components() {
         player.reset();
         tileManager.reset();
+        keyHandler.reset();
     }
 
     private void update_components() {
@@ -75,14 +91,12 @@ public class GamePanel extends JPanel {
         tileManager.update();
     }
 
-    private void update() {
-        update_components();
-
+    private void advance_level() {
         DiscreteMapPosition playerPosition = player.getPosition();
 
         if (playerPosition.equals(DiscreteMap.northEast) && tileManager.getSpellTilesSize() == tileManager.maxSpellTiles) {
             if (getGameLevel() < maxGameLevel) {
-                gameLevel++;
+                setGameLevel(getGameLevel() + 1);
                 reset_components();
             } else {
                 setWin(true);
@@ -90,14 +104,23 @@ public class GamePanel extends JPanel {
         }
     }
 
-    public void restart() {
-        gameLevel = 1;
-        win = false;
-        reset_components();
+    public void update() {
         update_components();
-        keyHandler.advanceTime = true;
+        advance_level();
     }
 
+    public void reset() {
+        setGameLevel(1);
+        setWin(false);
+        reset_components();
+    }
+
+    public void restart() {
+        reset();
+        repaint();
+    }
+
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 

@@ -1,16 +1,16 @@
-package main.colors;
+package ui;
 
 import java.awt.*;
 
 
 /**
- * Application wide class to provide UIColors to all UI component implementations in a centralized and non-contradicting
+ * Application wide class to provide Colors to all UI component implementations in a centralized and non-contradicting
  * way.
  * <p>
  * All the colors are taken from the <a href="https://tailwindcss.com/docs/customizing-colors">tailwindcss.com</a>
  * website where the creators of the framework have dedicated extreme amount of effort to create the beautiful palette.
  */
-public final class UIColors {
+public final class Colors {
     /**
      * slate-50
      */

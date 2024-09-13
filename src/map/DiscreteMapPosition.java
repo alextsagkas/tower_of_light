@@ -1,67 +1,80 @@
 package map;
 
-public class DiscreteMapPosition {
-
-    // Position coordinates
-    private final int x_map;
+public final class DiscreteMapPosition {
     private final int x;
-    private final int y_map;
+    private final int xPixel;
     private final int y;
+    private final int yPixel;
 
-    protected DiscreteMapPosition(int x, int y) {
+    private DiscreteMapPosition(int x, int y) {
         this.x = x;
-        this.x_map = x * DiscreteMap.tileSize;
+        this.xPixel = x * DiscreteMap.tileSize;
         this.y = y;
-        this.y_map = y * DiscreteMap.tileSize;
+        this.yPixel = y * DiscreteMap.tileSize;
     }
 
-    // Get coordinates
+    public static DiscreteMapPosition of(int x, int y) {
+        if (x >= DiscreteMap.maxScreenCol) {
+            x = DiscreteMap.maxScreenCol - 1;
+        } else if (x < 0) {
+            x = 0;
+        }
+
+        if (y >= DiscreteMap.maxScreenRow) {
+            y = DiscreteMap.maxScreenRow - 1;
+        } else if (y < 0) {
+            y = 0;
+        }
+
+        return new DiscreteMapPosition(x, y);
+    }
+
     public int getX() {
         return x;
     }
 
-    public int getX_map() {
-        return x_map;
+    public int getXPixel() {
+        return xPixel;
     }
 
     public int getY() {
         return y;
     }
 
-    public int getY_map() {
-        return y_map;
+    public int getYPixel() {
+        return yPixel;
     }
 
     public DiscreteMapPosition above() {
-        return DiscreteMap.getMapPosition(this.x, this.y - 1);
+        return DiscreteMapPosition.of(this.x, this.y - 1);
     }
 
     public DiscreteMapPosition below() {
-        return DiscreteMap.getMapPosition(this.x, this.y + 1);
+        return DiscreteMapPosition.of(this.x, this.y + 1);
     }
 
     public DiscreteMapPosition left() {
-        return DiscreteMap.getMapPosition(this.x - 1, this.y);
+        return DiscreteMapPosition.of(this.x - 1, this.y);
     }
 
     public DiscreteMapPosition right() {
-        return DiscreteMap.getMapPosition(this.x + 1, this.y);
+        return DiscreteMapPosition.of(this.x + 1, this.y);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
 
         DiscreteMapPosition that = (DiscreteMapPosition) o;
-        return getX_map() == that.getX_map() && getX() == that.getX() && getY_map() == that.getY_map() && getY() == that.getY();
+        return getXPixel() == that.getXPixel() && getX() == that.getX() && getYPixel() == that.getYPixel() && getY() == that.getY();
     }
 
     @Override
     public int hashCode() {
-        int result = getX_map();
+        int result = getXPixel();
         result = 31 * result + getX();
-        result = 31 * result + getY_map();
+        result = 31 * result + getYPixel();
         result = 31 * result + getY();
         return result;
     }

@@ -1,26 +1,29 @@
 package characters;
 
+import interfaces.Drawable;
+import interfaces.Resettable;
+import interfaces.Updatable;
 import main.GamePanel;
-import main.colors.UIColors;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
-import interfaces.Drawable;
-import tile.Tile;
+import ui.Colors;
+import ui.Render;
 
 import java.awt.*;
 
-public class Player implements Drawable {
+public final class Player implements Drawable, Updatable, Resettable {
     private final GamePanel gamePanel;
-
-    private DiscreteMapPosition playerPos = DiscreteMap.southWest;
-
-    private String direction = "";
-    private boolean collision = false;
-
-    public final int visibilityRadius = 6;
+    private DiscreteMapPosition playerPos;
+    private Direction direction;
+    private boolean collision;
+    public final int visibilityRadius;
 
     public Player(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        this.playerPos = DiscreteMap.southWest;
+        this.direction = Direction.NONE;
+        this.collision = false;
+        this.visibilityRadius = 6;
     }
 
     public void setPosition(DiscreteMapPosition pos) {
@@ -39,81 +42,78 @@ public class Player implements Drawable {
         return collision;
     }
 
-    public String getDirection() {
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public Direction getDirection() {
         return direction;
     }
 
     // Move player
     public void moveUp() {
-        setPosition(DiscreteMap.getMapPosition(playerPos.getX(), playerPos.getY() - 1));
+        setPosition(getPosition().above());
     }
 
     public void moveDown() {
-        setPosition(DiscreteMap.getMapPosition(playerPos.getX(), playerPos.getY() + 1));
+        setPosition(getPosition().below());
     }
 
     public void moveRight() {
-        setPosition(DiscreteMap.getMapPosition(playerPos.getX() + 1, playerPos.getY()));
+        setPosition(getPosition().right());
     }
 
     public void moveLeft() {
-        setPosition(DiscreteMap.getMapPosition(playerPos.getX() - 1, playerPos.getY()));
+        setPosition(getPosition().left());
     }
 
     public void reset() {
-        direction = "";
-        collision = false;
+        setDirection(Direction.NONE);
+        setCollision(false);
         setPosition(DiscreteMap.southWest);
     }
 
     public void update() {
-        if (gamePanel.keyHandler.upPressed) {
-            direction = "up";
-        } else if (gamePanel.keyHandler.downPressed) {
-            direction = "down";
-        } else if (gamePanel.keyHandler.leftPressed) {
-            direction = "left";
-        } else if (gamePanel.keyHandler.rightPressed) {
-            direction = "right";
+        if (gamePanel.keyHandler.isUpPressed()) {
+            setDirection(Direction.UP);
+        } else if (gamePanel.keyHandler.isDownPressed()) {
+            setDirection(Direction.DOWN);
+        } else if (gamePanel.keyHandler.isLeftPressed()) {
+            setDirection(Direction.LEFT);
+        } else if (gamePanel.keyHandler.isRightPressed()) {
+            setDirection(Direction.RIGHT);
         } else {
-            direction = "";
+            setDirection(Direction.NONE);
         }
 
-        collision = false;
         gamePanel.collisionChecker.checkTile(this);
 
-        if(!collision) {
+        if (!collision) {
             switch (direction) {
-                case "up": moveUp(); break;
-                case "down": moveDown(); break;
-                case "left": moveLeft(); break;
-                case "right": moveRight(); break;
+                case Direction.UP:
+                    moveUp();
+                    break;
+                case Direction.DOWN:
+                    moveDown();
+                    break;
+                case Direction.LEFT:
+                    moveLeft();
+                    break;
+                case Direction.RIGHT:
+                    moveRight();
+                    break;
             }
-
         }
     }
 
     public void draw(Graphics2D g2d) {
-        // Border
-        int x_pos = playerPos.getX_map();
-        int y_pos = playerPos.getY_map();
-
-        g2d.setColor(UIColors.borderColor);
-        g2d.fillRect(x_pos, y_pos, DiscreteMap.tileSize, DiscreteMap.tileSize);
-
-        // Inner fill
-        int x_innerPos = x_pos + Tile.inner_shift;
-        int y_innerPos = y_pos + Tile.inner_shift;
-        int innerTileSize = DiscreteMap.tileSize - 2 * Tile.inner_shift;
-
-        g2d.setColor(UIColors.playerColor);
-        g2d.fillRect(x_innerPos, y_innerPos, innerTileSize, innerTileSize);
+        Render.drawRectangle(g2d, getPosition(), Colors.playerColor);
     }
 
     @Override
     public String toString() {
         return "Player{" +
-                "playerPos=" + playerPos +
+                "playerPos=" + getPosition() +
                 '}';
     }
 }
