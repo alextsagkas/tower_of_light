@@ -1,5 +1,8 @@
 package map;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public final class DiscreteMapPosition {
     private final int x;
     private final int xPixel;
@@ -13,7 +16,8 @@ public final class DiscreteMapPosition {
         this.yPixel = y * DiscreteMap.tileSize;
     }
 
-    public static DiscreteMapPosition of(int x, int y) {
+    @Contract(value = "_, _ -> new")
+    public static @NotNull DiscreteMapPosition of(int x, int y) {
         if (x >= DiscreteMap.maxScreenCol) {
             x = DiscreteMap.maxScreenCol - 1;
         } else if (x < 0) {
@@ -45,20 +49,28 @@ public final class DiscreteMapPosition {
         return yPixel;
     }
 
-    public DiscreteMapPosition above() {
+    @Contract(" -> new")
+    public @NotNull DiscreteMapPosition above() {
         return DiscreteMapPosition.of(this.x, this.y - 1);
     }
 
-    public DiscreteMapPosition below() {
+    @Contract(" -> new")
+    public @NotNull DiscreteMapPosition below() {
         return DiscreteMapPosition.of(this.x, this.y + 1);
     }
 
-    public DiscreteMapPosition left() {
+    @Contract(" -> new")
+    public @NotNull DiscreteMapPosition left() {
         return DiscreteMapPosition.of(this.x - 1, this.y);
     }
 
-    public DiscreteMapPosition right() {
+    @Contract(" -> new")
+    public @NotNull DiscreteMapPosition right() {
         return DiscreteMapPosition.of(this.x + 1, this.y);
+    }
+
+    public int distanceTo(@NotNull DiscreteMapPosition other) {
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }
 
     @Override
@@ -67,24 +79,20 @@ public final class DiscreteMapPosition {
         if (o == null || getClass() != o.getClass()) {return false;}
 
         DiscreteMapPosition that = (DiscreteMapPosition) o;
-        return getXPixel() == that.getXPixel() && getX() == that.getX() && getYPixel() == that.getYPixel() && getY() == that.getY();
+        return getX() == that.getX() && xPixel == that.xPixel && getY() == that.getY() && yPixel == that.yPixel;
     }
 
     @Override
     public int hashCode() {
-        int result = getXPixel();
-        result = 31 * result + getX();
-        result = 31 * result + getYPixel();
+        int result = getX();
+        result = 31 * result + xPixel;
         result = 31 * result + getY();
+        result = 31 * result + yPixel;
         return result;
     }
 
-    public int distanceTo(DiscreteMapPosition other) {
-        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
-    }
-
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "DiscreteMapPosition{" +
                 "x=" + getX() +
                 ", y=" + getY() +

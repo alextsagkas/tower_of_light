@@ -8,6 +8,7 @@ import map.DiscreteMap;
 import map.DiscreteMapPosition;
 import map.tiles.decorators.ExitTileDecorator;
 import map.tiles.decorators.SpellTileDecorator;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -34,11 +35,11 @@ public final class TileManager implements Updatable, Resettable {
         loadMap();
     }
 
-    public Tile getTile(DiscreteMapPosition position) {
+    public Tile getTile(@NotNull DiscreteMapPosition position) {
         return mapTiles[position.getY()][position.getX()];
     }
 
-    public void setTile(DiscreteMapPosition position, Tile tile) {
+    public void setTile(@NotNull DiscreteMapPosition position, Tile tile) {
         mapTiles[position.getY()][position.getX()] = tile;
     }
 

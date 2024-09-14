@@ -1,6 +1,7 @@
 package main;
 
 import interfaces.Resettable;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -87,7 +88,7 @@ public final class KeyHandler implements KeyListener, Resettable {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(@NotNull KeyEvent e) {
         setAdvanceTime(true);
 
         int keyCode = e.getKeyCode();
@@ -114,7 +115,7 @@ public final class KeyHandler implements KeyListener, Resettable {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(@NotNull KeyEvent e) {
         setAdvanceTime(false);
 
         int keyCode = e.getKeyCode();

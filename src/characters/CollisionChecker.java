@@ -3,6 +3,7 @@ package characters;
 import main.GamePanel;
 import map.DiscreteMapPosition;
 import map.tiles.Tile;
+import org.jetbrains.annotations.NotNull;
 
 public final class CollisionChecker {
     GamePanel gamePanel;
@@ -16,7 +17,7 @@ public final class CollisionChecker {
         return !nearTile.getCollision();
     }
 
-    public void checkTile(Player player) {
+    public void checkTile(@NotNull Player player) {
         boolean isAllowed = switch (player.getDirection()) {
             case Direction.UP -> isAllowedPosition(player.getPosition().above());
             case Direction.DOWN -> isAllowedPosition(player.getPosition().below());

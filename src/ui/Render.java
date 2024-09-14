@@ -2,13 +2,14 @@ package ui;
 
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public final class Render {
     public static final int inner_shift = 1;
 
-    public static void drawRectangle(Graphics2D g2d, DiscreteMapPosition position, Color innerColor) {
+    public static void drawRectangle(@NotNull Graphics2D g2d, @NotNull DiscreteMapPosition position, Color innerColor) {
         // Border
         int x_pos = position.getXPixel();
         int y_pos = position.getYPixel();

@@ -113,7 +113,9 @@ public final class Player implements Drawable, Updatable, Resettable {
     @Override
     public String toString() {
         return "Player{" +
-                "playerPos=" + getPosition() +
+                "collision=" + collision +
+                ", playerPos=" + playerPos +
+                ", direction=" + direction +
                 '}';
     }
 }

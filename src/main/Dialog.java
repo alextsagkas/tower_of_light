@@ -1,5 +1,7 @@
 package main;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -32,7 +34,7 @@ public final class Dialog {
         winDialog.setVisible(true);
     }
 
-    private JPanel getButtonPanel(JDialog winDialog) {
+    private @NotNull JPanel getButtonPanel(JDialog winDialog) {
         JPanel buttonPanel = new JPanel();
 
         // Buttons

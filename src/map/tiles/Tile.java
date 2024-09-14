@@ -4,6 +4,7 @@ import interfaces.Drawable;
 import map.DiscreteMapPosition;
 import map.tiles.types.FloorTile;
 import map.tiles.types.WallTile;
+import org.jetbrains.annotations.NotNull;
 import ui.Colors;
 import ui.Render;
 
@@ -26,8 +27,8 @@ abstract public class Tile implements Drawable {
         this.visible = false;
     }
 
-    public static Tile createTile(
-            TileType tileType,
+    public static @NotNull Tile createTile(
+            @NotNull TileType tileType,
             DiscreteMapPosition discreteMapPosition
     ) {
         return switch (tileType) {
@@ -99,9 +100,11 @@ abstract public class Tile implements Drawable {
     @Override
     public String toString() {
         return "Tile{" +
-                "visible=" + visible +
+                "discreteMapPosition=" + discreteMapPosition +
+                ", collision=" + collision +
                 ", discovered=" + discovered +
-                ", discreteMapPosition=" + discreteMapPosition +
+                ", visible=" + visible +
                 '}';
     }
+
 }
