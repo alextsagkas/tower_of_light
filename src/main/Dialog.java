@@ -19,7 +19,7 @@ public final class Dialog {
 
         // Message label
         JLabel messageLabel = new JLabel(
-                "You converted all Tower levers to Light.",
+                String.format("You converted all %d tower levers to light!", gamePanel.maxGameLevel),
                 SwingConstants.CENTER
         );
         winDialog.add(messageLabel, BorderLayout.CENTER);

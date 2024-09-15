@@ -17,7 +17,7 @@ public final class Game {
         window.setResizable(false);
         window.setLayout(new BorderLayout());
 
-        gamePanel = new GamePanel();
+        gamePanel = new GamePanel(this);
 
         infoPanel = new InfoPanel(new BorderLayout());
 

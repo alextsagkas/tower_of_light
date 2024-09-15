@@ -1,6 +1,8 @@
 package map.tiles;
 
 import characters.Player;
+import interfaces.LogObserver;
+import interfaces.LogSubject;
 import interfaces.Resettable;
 import interfaces.Updatable;
 import main.GamePanel;
@@ -18,12 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class TileManager implements Updatable, Resettable {
+public final class TileManager implements Updatable, Resettable, LogSubject {
     GamePanel gamePanel;
     Tile[][] mapTiles;
     List<Tile> spellTiles;
     public final int maxSpellTiles;
     final int spellTileSeparation;
+    private LogObserver logObserver;
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -72,6 +75,14 @@ public final class TileManager implements Updatable, Resettable {
         updateVisibility();
     }
 
+    public void attach(LogObserver logObserver) {
+        this.logObserver = logObserver;
+    }
+
+    public void notifyObserver(String log) {
+        logObserver.update(log);
+    }
+
     private void updateVisibility() {
         Player player = gamePanel.player;
         for (Tile[] rowOfTiles : this.mapTiles) {
@@ -97,6 +108,7 @@ public final class TileManager implements Updatable, Resettable {
             Tile spellTile = new SpellTileDecorator(getTile(playerPosition));
             setTile(spellTile.getPosition(), spellTile);
             spellTiles.add(spellTile);
+            notifyObserver(String.format("Execute %d/%d beacons of light.", getSpellTilesSize(), maxSpellTiles));
         }
 
     }
@@ -111,10 +123,12 @@ public final class TileManager implements Updatable, Resettable {
                 tile.toLight();
             }
         }
+        notifyObserver(String.format("Level %d is converted from chaos to light.", gamePanel.getGameLevel()));
+        notifyObserver("The door to the next level has opened!");
     }
 
     private void updateSpells() {
-        if (gamePanel.keyHandler.isCastSpell()) {
+        if (gamePanel.keyHandler.isCastSpell() && spellTiles.size() < maxSpellTiles) {
             executeSpell();
             if (spellTiles.size() == maxSpellTiles) {
                 convertToLight();
