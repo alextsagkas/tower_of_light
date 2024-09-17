@@ -84,4 +84,14 @@ public final class Colors {
      * yellow-300
      */
     public static Color exitTileVisibleColor = new Color(0xfde047);
+
+    /**
+     * gray-100
+     */
+    public static Color infoPanelBackgroundColor = new Color(0xf3f4f6);
+
+    /**
+     * gray-950
+     */
+    public static Color infoPanelForegroundColor = new Color(0x030712);
 }

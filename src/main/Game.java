@@ -7,29 +7,29 @@ public final class Game {
     private final JFrame window;
     public final GamePanel gamePanel;
     public final InfoPanel infoPanel;
-    public final PlayerStatus playerStatus;
+    public final PlayerStats playerStats;
     public final GameLog gameLog;
 
     private Game() {
+        // Game arena
+        gamePanel = new GamePanel(this);
+
+        // Information panel
+        playerStats = new PlayerStats();
+        gameLog = new GameLog();
+
+        infoPanel = new InfoPanel();
+        infoPanel.add(playerStats, BorderLayout.NORTH);
+        infoPanel.add(gameLog, BorderLayout.SOUTH);
+
+        // Whole window
         window = new JFrame();
 
         window.setTitle("Tower of Light");
         window.setResizable(false);
         window.setLayout(new BorderLayout());
-
-        gamePanel = new GamePanel(this);
-
-        infoPanel = new InfoPanel(new BorderLayout());
-
-        playerStatus = new PlayerStatus(gamePanel.player);
-        gameLog = new GameLog();
-
-        infoPanel.add(playerStatus, BorderLayout.NORTH);
-        infoPanel.add(gameLog, BorderLayout.SOUTH);
-
         window.add(gamePanel, BorderLayout.CENTER);
         window.add(infoPanel, BorderLayout.EAST);
-
         window.pack();
 
         // Settings

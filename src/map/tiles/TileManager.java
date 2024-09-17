@@ -124,7 +124,11 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
             }
         }
         notifyObserver(String.format("Level %d is converted from chaos to light.", gamePanel.getGameLevel()));
-        notifyObserver("The door to the next level has opened!");
+        if (gamePanel.getGameLevel() < gamePanel.maxGameLevel) {
+            notifyObserver("The door to the next level has opened!");
+        } else {
+            notifyObserver("The door to the light has opened!");
+        }
     }
 
     private void updateSpells() {
