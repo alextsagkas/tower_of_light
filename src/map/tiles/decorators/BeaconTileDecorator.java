@@ -4,8 +4,8 @@ import map.tiles.Tile;
 import map.tiles.TileDecorator;
 import ui.Colors;
 
-public final class SpellTileDecorator extends TileDecorator {
-    public SpellTileDecorator(Tile tile) {
+public final class BeaconTileDecorator extends TileDecorator {
+    public BeaconTileDecorator(Tile tile) {
         super(tile);
 
         tile.setInvisibleColor(Colors.spellTileInvisibleColor);

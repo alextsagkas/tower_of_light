@@ -78,6 +78,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
 
     private void attachObservers() {
         this.attach(game.gameLog);
+        player.attach(game.gameLog);
         tileManager.attach(game.gameLog);
     }
 
@@ -116,7 +117,8 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     private void advance_level() {
         DiscreteMapPosition playerPosition = player.getPosition();
 
-        if (playerPosition.equals(DiscreteMap.northEast) && tileManager.getSpellTilesSize() == tileManager.maxSpellTiles) {
+        if (playerPosition.equals(DiscreteMap.northEast) &&
+            tileManager.getBeaconTilesSize() == tileManager.maxBeaconTiles) {
             if (getGameLevel() < maxGameLevel) {
                 setGameLevel(getGameLevel() + 1);
                 reset_components();

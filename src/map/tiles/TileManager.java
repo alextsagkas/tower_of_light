@@ -8,8 +8,8 @@ import interfaces.Updatable;
 import main.GamePanel;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
+import map.tiles.decorators.BeaconTileDecorator;
 import map.tiles.decorators.ExitTileDecorator;
-import map.tiles.decorators.SpellTileDecorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -19,21 +19,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
 
 public final class TileManager implements Updatable, Resettable, LogSubject {
     GamePanel gamePanel;
     Tile[][] mapTiles;
-    List<Tile> spellTiles;
-    public final int maxSpellTiles;
-    final int spellTileSeparation;
+    List<Tile> beaconTiles;
+    public final int maxBeaconTiles;
+    public final int beaconTileSeparation;
     private LogObserver logObserver;
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.mapTiles = new Tile[DiscreteMap.maxScreenRow][DiscreteMap.maxScreenCol];
-        this.spellTiles = new ArrayList<>();
-        this.maxSpellTiles = 3;
-        this.spellTileSeparation = 20;
+        this.beaconTiles = new ArrayList<>();
+        this.maxBeaconTiles = 3;
+        this.beaconTileSeparation = 10;
 
         loadMap();
     }
@@ -46,8 +47,16 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         mapTiles[position.getY()][position.getX()] = tile;
     }
 
-    public int getSpellTilesSize() {
-        return spellTiles.size();
+    public int getBeaconTilesSize() {
+        return beaconTiles.size();
+    }
+
+    public void attach(LogObserver logObserver) {
+        this.logObserver = logObserver;
+    }
+
+    public void notifyObserver(String log) {
+        logObserver.update(log);
     }
 
     private void loadMap() throws RuntimeException {
@@ -69,18 +78,17 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         }
     }
 
+    public int beaconTileMinSeparation(DiscreteMapPosition position) {
+        OptionalInt minSeparation = beaconTiles.stream()
+                                               .mapToInt(tile -> position.distanceTo(tile.getPosition()))
+                                               .min();
+        return minSeparation.orElse(Integer.MAX_VALUE);
+    }
+
     public void reset() {
-        spellTiles.clear();
+        beaconTiles.clear();
         loadMap();
         updateVisibility();
-    }
-
-    public void attach(LogObserver logObserver) {
-        this.logObserver = logObserver;
-    }
-
-    public void notifyObserver(String log) {
-        logObserver.update(log);
     }
 
     private void updateVisibility() {
@@ -100,17 +108,16 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         }
     }
 
-    private void executeSpell() {
-        DiscreteMapPosition playerPosition = gamePanel.player.getPosition();
-        boolean separateTiles = spellTiles.stream().allMatch(tile -> tile.getPosition().distanceTo(playerPosition) > spellTileSeparation);
+    public void drawBeacon(DiscreteMapPosition position) {
+        Tile beaconTile = new BeaconTileDecorator(getTile(position));
+        setTile(beaconTile.getPosition(), beaconTile);
+        beaconTiles.add(beaconTile);
 
-        if (separateTiles && spellTiles.size() < maxSpellTiles) {
-            Tile spellTile = new SpellTileDecorator(getTile(playerPosition));
-            setTile(spellTile.getPosition(), spellTile);
-            spellTiles.add(spellTile);
-            notifyObserver(String.format("Execute %d/%d beacons of light.", getSpellTilesSize(), maxSpellTiles));
+        notifyObserver(String.format("Create %d/%d beacons of light.", getBeaconTilesSize(), maxBeaconTiles));
+
+        if (beaconTiles.size() == maxBeaconTiles) {
+            convertToLight();
         }
-
     }
 
     private void convertToLight() {
@@ -123,6 +130,7 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
                 tile.toLight();
             }
         }
+
         notifyObserver(String.format("Level %d is converted from chaos to light.", gamePanel.getGameLevel()));
         if (gamePanel.getGameLevel() < gamePanel.maxGameLevel) {
             notifyObserver("The door to the next level has opened!");
@@ -131,18 +139,8 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         }
     }
 
-    private void updateSpells() {
-        if (gamePanel.keyHandler.isCastSpell() && spellTiles.size() < maxSpellTiles) {
-            executeSpell();
-            if (spellTiles.size() == maxSpellTiles) {
-                convertToLight();
-            }
-        }
-    }
-
     public void update() {
         updateVisibility();
-        updateSpells();
     }
 
     public void draw(Graphics2D g2d) {

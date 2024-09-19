@@ -23,7 +23,7 @@ public class PlayerStats extends JPanel {
 
     private void customizeTitleLabel() {
         String title = "<html>" +
-                "<h2>~~~~~~~ player stats ~~~~~~~</h2>";
+                       "<h2>======== Player Stats ========</h2>";
         titleLabel.setText(title);
         titleLabel.setFont(InfoPanel.font);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -31,7 +31,7 @@ public class PlayerStats extends JPanel {
 
     private void customizeStatusLabel() {
         String state = "<html>" +
-                "<p>Hello, this is a random text.</p>";
+                       "<p>Hello, this is a random text.</p>";
 
         statsLabel.setText(state);
         statsLabel.setFont(InfoPanel.font);

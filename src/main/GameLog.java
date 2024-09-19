@@ -30,14 +30,14 @@ public class GameLog extends JPanel implements LogObserver {
     }
 
     private void customizeTitleLabel() {
-        String title = "<html>" + "<h2>~~~~~~~~ transcript ~~~~~~~~</h2>" + "<br>";
+        String title = "<html>" + "<h2>========= Transcript =========</h2>" + "<br>";
         titleLabel.setText(title);
         titleLabel.setFont(InfoPanel.font);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     private void customizeTextArea() {
-        textArea.setRows(DiscreteMap.maxScreenRow / 5);
+        textArea.setRows(DiscreteMap.maxScreenRow / 4);
         textArea.setColumns(DiscreteMap.maxScreenCol);
         textArea.setEditable(false);
         textArea.setBackground(Colors.infoPanelBackgroundColor);

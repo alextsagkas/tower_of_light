@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 public final class KeyHandler implements KeyListener, Resettable {
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
-    private boolean castSpell;
+    private boolean castBeacon;
     private boolean advanceTime;
 
     public KeyHandler() {
@@ -20,7 +20,7 @@ public final class KeyHandler implements KeyListener, Resettable {
         leftPressed = false;
         rightPressed = false;
 
-        castSpell = false;
+        castBeacon = false;
 
         advanceTime = false;
     }
@@ -41,8 +41,8 @@ public final class KeyHandler implements KeyListener, Resettable {
         this.rightPressed = rightPressed;
     }
 
-    private void setCastSpell(boolean castSpell) {
-        this.castSpell = castSpell;
+    private void setCastBeacon(boolean castBeacon) {
+        this.castBeacon = castBeacon;
     }
 
     private void setAdvanceTime(boolean advanceTime) {
@@ -65,8 +65,8 @@ public final class KeyHandler implements KeyListener, Resettable {
         return rightPressed;
     }
 
-    public boolean isCastSpell() {
-        return castSpell;
+    public boolean isCastBeacon() {
+        return castBeacon;
     }
 
     public boolean isAdvanceTime() {
@@ -78,7 +78,7 @@ public final class KeyHandler implements KeyListener, Resettable {
         setDownPressed(false);
         setLeftPressed(false);
         setRightPressed(false);
-        setCastSpell(false);
+        setCastBeacon(false);
         setAdvanceTime(false);
     }
 
@@ -106,8 +106,8 @@ public final class KeyHandler implements KeyListener, Resettable {
             case KeyEvent.VK_D:
                 setRightPressed(true);
                 break;
-            case KeyEvent.VK_X:
-                setCastSpell(true);
+            case KeyEvent.VK_L:
+                setCastBeacon(true);
                 break;
             default:
                 break;
@@ -133,8 +133,8 @@ public final class KeyHandler implements KeyListener, Resettable {
             case KeyEvent.VK_D:
                 setRightPressed(false);
                 break;
-            case KeyEvent.VK_X:
-                setCastSpell(false);
+            case KeyEvent.VK_L:
+                setCastBeacon(false);
                 break;
             default:
                 break;
