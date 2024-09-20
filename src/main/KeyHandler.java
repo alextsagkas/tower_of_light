@@ -1,16 +1,19 @@
 package main;
 
+import interfaces.LogObserver;
+import interfaces.LogSubject;
 import interfaces.Resettable;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public final class KeyHandler implements KeyListener, Resettable {
+public final class KeyHandler implements KeyListener, Resettable, LogSubject {
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
     private boolean castBeacon;
     private boolean advanceTime;
+    private LogObserver logObserver;
 
     public KeyHandler() {
         super();
@@ -23,6 +26,14 @@ public final class KeyHandler implements KeyListener, Resettable {
         castBeacon = false;
 
         advanceTime = false;
+    }
+
+    public void attach(LogObserver logObserver) {
+        this.logObserver = logObserver;
+    }
+
+    public void notifyObserver(String log) {
+        logObserver.update(log);
     }
 
     private void setUpPressed(boolean upPressed) {
@@ -110,6 +121,7 @@ public final class KeyHandler implements KeyListener, Resettable {
                 setCastBeacon(true);
                 break;
             default:
+                notifyObserver(String.format("No action assigned to key %s", KeyEvent.getKeyText(keyCode)));
                 break;
         }
     }

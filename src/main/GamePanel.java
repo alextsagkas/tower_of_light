@@ -78,6 +78,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
 
     private void attachObservers() {
         this.attach(game.gameLog);
+        keyHandler.attach(game.gameLog);
         player.attach(game.gameLog);
         tileManager.attach(game.gameLog);
     }
