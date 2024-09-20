@@ -37,6 +37,7 @@ public class GameLog extends JPanel implements LogObserver {
     }
 
     private void customizeTextArea() {
+        textArea.setFocusable(false);
         textArea.setRows(DiscreteMap.maxScreenRow / 4);
         textArea.setColumns(DiscreteMap.maxScreenCol);
         textArea.setEditable(false);
