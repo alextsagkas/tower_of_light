@@ -1,5 +1,6 @@
 package characters;
 
+import characters.player.Player;
 import main.GamePanel;
 import map.DiscreteMapPosition;
 import map.tiles.Tile;

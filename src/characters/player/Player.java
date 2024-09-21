@@ -1,5 +1,6 @@
-package characters;
+package characters.player;
 
+import characters.Direction;
 import interfaces.*;
 import main.GamePanel;
 import map.DiscreteMap;
@@ -17,17 +18,54 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
     private boolean collision;
     public final int visibilityRadius;
     private int actionsNumber;
+
+    private final Warrior warrior;
+    private final Race race;
+
+    private final String name;
+
+    private int level;
+
+    private int hitPoints;
+    private int maxHitPoints;
+
+    private int manaPoints;
+    private int maxManaPoints;
+
+    private int strength;
+    private int intellect;
+
+    private int swingDefence;
+    private int thrustDefence;
+    private int magicalDefence;
+
+    private int experiencePoints;
+
     private LogObserver logObserver;
     private StatObserver statObserver;
 
-    public Player(GamePanel gamePanel) {
+    public Player(GamePanel gamePanel, Race race, Warrior warrior) {
         this.gamePanel = gamePanel;
         this.playerPos = DiscreteMap.southWest;
         this.direction = Direction.NONE;
         this.collision = false;
         this.visibilityRadius = 6;
         this.actionsNumber = 0;
+
+        this.race = race;
+        this.warrior = warrior;
+
+        this.name = this.race.getRace() + " " + this.warrior.getWarrior();
+
+        this.level = 1;
+
+        this.race.initializeStats(this);
+        this.warrior.updateStats(this);
+
+        this.hitPoints = getMaxHitPoints();
+        this.manaPoints = getMaxManaPoints();
     }
+
 
     public void setPosition(DiscreteMapPosition pos) {
         this.playerPos = pos;
@@ -61,20 +99,112 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         return actionsNumber;
     }
 
-    public void attach(LogObserver logObserver) {
+    public String getName() {
+        return name;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setHitPoints(int hitPoints) {
+        this.hitPoints = hitPoints;
+    }
+
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    public void setMaxHitPoints(int maxHitPoints) {
+        this.maxHitPoints = maxHitPoints;
+    }
+
+    public int getMaxHitPoints() {
+        return maxHitPoints;
+    }
+
+    public void setManaPoints(int manaPoints) {
+        this.manaPoints = manaPoints;
+    }
+
+    public int getManaPoints() {
+        return manaPoints;
+    }
+
+    public void setMaxManaPoints(int maxManaPoints) {
+        this.maxManaPoints = maxManaPoints;
+    }
+
+    public int getMaxManaPoints() {
+        return maxManaPoints;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setIntellect(int intellect) {
+        this.intellect = intellect;
+    }
+
+    public int getIntellect() {
+        return intellect;
+    }
+
+    public void setSwingDefence(int swingDefence) {
+        this.swingDefence = swingDefence;
+    }
+
+    public int getSwingDefence() {
+        return swingDefence;
+    }
+
+    public void setThrustDefence(int thrustDefence) {
+        this.thrustDefence = thrustDefence;
+    }
+
+    public int getThrustDefence() {
+        return thrustDefence;
+    }
+
+    public void setMagicalDefence(int magicalDefence) {
+        this.magicalDefence = magicalDefence;
+    }
+
+    public int getMagicalDefence() {
+        return magicalDefence;
+    }
+
+    public void setExperiencePoints(int experiencePoints) {
+        this.experiencePoints = experiencePoints;
+    }
+
+    public int getExperiencePoints() {
+        return experiencePoints;
+    }
+
+    public void attachLogObserver(LogObserver logObserver) {
         this.logObserver = logObserver;
     }
 
-    public void notifyObserver(String log) {
-        logObserver.update(log);
+    public void notifyLogObserver(String log) {
+        logObserver.updateLog(log);
     }
 
-    public void attach(StatObserver statObserver) {
+    public void attachStatObserver(StatObserver statObserver) {
         this.statObserver = statObserver;
     }
 
-    public void notifyObserver() {
-        statObserver.update();
+    public void notifyStatObserver() {
+        statObserver.updateStats();
     }
 
     private void moveUp() {
@@ -102,6 +232,20 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         setDirection(Direction.NONE);
         setCollision(false);
         setActionsNumber(0);
+    }
+
+    @Override
+    public void restart() {
+        reset();
+        setMaxHitPoints(0);
+        setMaxManaPoints(0);
+        setLevel(1);
+        setExperiencePoints(0);
+        this.race.initializeStats(this);
+        this.warrior.updateStats(this);
+        setHitPoints(getMaxHitPoints());
+        setManaPoints(getMaxManaPoints());
+        notifyStatObserver();
     }
 
     private void move() {
@@ -173,9 +317,37 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         }
     }
 
+    private void updateLevel() {
+        int level;
+        int xp = getExperiencePoints();
+
+        if (xp < 300) {
+            level = 1;
+        } else if (xp < 900) {
+            level = 2;
+        } else if (xp < 2700) {
+            level = 3;
+        } else if (xp < 6500) {
+            level = 4;
+        } else if (xp < 14000) {
+            level = 5;
+        } else {
+            level = 6;
+        }
+
+        if (level != getLevel()) {
+            setLevel(level);
+            notifyLogObserver(String.format("player's level is %d", getLevel()));
+            notifyStatObserver();
+            warrior.updateStats(this);
+            notifyLogObserver("stats have been updated");
+        }
+    }
+
     public void update() {
         move();
         executeBeacon();
+        updateLevel();
     }
 
     public void draw(Graphics2D g2d) {

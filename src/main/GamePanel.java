@@ -1,7 +1,7 @@
 package main;
 
 import characters.CollisionChecker;
-import characters.Player;
+import characters.player.Player;
 import interfaces.LogObserver;
 import interfaces.LogSubject;
 import interfaces.Resettable;
@@ -35,7 +35,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         this.game = game;
         this.tileManager = new TileManager(this);
         this.keyHandler = new KeyHandler();
-        this.player = new Player(this);
+        this.player = new Player(this, Game.getRace(), Game.getWarrior());
         this.collisionChecker = new CollisionChecker(this);
 
         // JPanel Settings
@@ -111,6 +111,12 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         keyHandler.reset();
     }
 
+    private void restart_components() {
+        player.restart();
+        tileManager.restart();
+        keyHandler.restart();
+    }
+
     private void update_components() {
         player.update();
         tileManager.update();
@@ -142,8 +148,11 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         reset_components();
     }
 
+    @Override
     public void restart() {
-        reset();
+        setGameLevel(1);
+        setWin(false);
+        restart_components();
         repaint();
     }
 

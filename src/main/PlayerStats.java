@@ -1,6 +1,6 @@
 package main;
 
-import characters.Player;
+import characters.player.Player;
 import interfaces.StatObserver;
 import ui.Colors;
 
@@ -36,15 +36,13 @@ public class PlayerStats extends JPanel implements StatObserver {
 
     private String getStatsString() {
         return "<html>" +
-               String.format("name: %s", player.name) +
+               String.format("name: %s", player.getName()) +
                "<br>" +
-               // class
-               // race
                String.format("level: %d", player.getLevel()) +
                "<br>" +
-               String.format("hit points: %d / %d", player.getHitPoints(), player.maxHitPoints) +
+               String.format("hit points: %d / %d", player.getHitPoints(), player.getMaxHitPoints()) +
                "<br>" +
-               String.format("mana points: %d / %d", player.getManaPoints(), player.maxManaPoints) +
+               String.format("mana points: %d / %d", player.getManaPoints(), player.getMaxManaPoints()) +
                "<br>" +
                String.format("strength: %d", player.getStrength()) +
                "<br>" +

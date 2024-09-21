@@ -1,5 +1,8 @@
 package main;
 
+import characters.player.Race;
+import characters.player.Warrior;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,6 +12,8 @@ public final class Game {
     public final InfoPanel infoPanel;
     public final PlayerStats playerStats;
     public final GameLog gameLog;
+    private static Race race;
+    private static Warrior warrior;
 
     private Game() {
         // Game arena
@@ -38,6 +43,22 @@ public final class Game {
         window.setVisible(true);
     }
 
+    public static void setRace(Race race) {
+        Game.race = race;
+    }
+
+    public static Race getRace() {
+        return Game.race;
+    }
+
+    public static void setWarrior(Warrior warrior) {
+        Game.warrior = warrior;
+    }
+
+    public static Warrior getWarrior() {
+        return Game.warrior;
+    }
+
     private void start() {
         // Exit the game only through a dialog
         while (true) {
@@ -54,7 +75,19 @@ public final class Game {
     }
 
     public static void main(String[] args) {
+        try {
+            Game.setRace(Race.parseRace(args[0]));
+            Game.setWarrior(Warrior.parseWarrior(args[1]));
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid argument provided: " + e.getMessage() + ".");
+            System.err.println("Usage: java Game <race> <warrior>.");
+            System.err.println("- <race>: Elf, Human, Orc, Tauren.");
+            System.err.println("- <warrior>: Knight, Mage, Paladin.");
+            System.exit(1);
+        }
+
         Game game = new Game();
+
         game.start();
     }
 }

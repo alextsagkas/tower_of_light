@@ -1,6 +1,6 @@
 package map.tiles;
 
-import characters.Player;
+import characters.player.Player;
 import interfaces.LogObserver;
 import interfaces.LogSubject;
 import interfaces.Resettable;
