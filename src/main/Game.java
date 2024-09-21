@@ -15,7 +15,7 @@ public final class Game {
         gamePanel = new GamePanel(this);
 
         // Information panel
-        playerStats = new PlayerStats();
+        playerStats = new PlayerStats(gamePanel.player);
         gameLog = new GameLog();
 
         infoPanel = new InfoPanel();

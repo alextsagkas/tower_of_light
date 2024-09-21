@@ -1,22 +1,27 @@
 package main;
 
+import characters.Player;
+import interfaces.StatObserver;
 import ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayerStats extends JPanel {
+public class PlayerStats extends JPanel implements StatObserver {
+    private final Player player;
     private final JLabel titleLabel;
     private final JLabel statsLabel;
 
-    public PlayerStats() {
+    public PlayerStats(Player player) {
         super(new BorderLayout());
+
+        this.player = player;
 
         titleLabel = new JLabel();
         customizeTitleLabel();
 
         statsLabel = new JLabel();
-        customizeStatusLabel();
+        customizeStatLabel();
 
         customizePanel();
     }
@@ -29,11 +34,37 @@ public class PlayerStats extends JPanel {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private void customizeStatusLabel() {
-        String state = "<html>" +
-                       "<p>Hello, this is a random text.</p>";
+    private String getStatsString() {
+        return "<html>" +
+               String.format("name: %s", player.name) +
+               "<br>" +
+               // class
+               // race
+               String.format("level: %d", player.getLevel()) +
+               "<br>" +
+               String.format("hit points: %d / %d", player.getHitPoints(), player.maxHitPoints) +
+               "<br>" +
+               String.format("mana points: %d / %d", player.getManaPoints(), player.maxManaPoints) +
+               "<br>" +
+               String.format("strength: %d", player.getStrength()) +
+               "<br>" +
+               String.format("intellect: %d", player.getIntellect()) +
+               "<br>" +
+               String.format("swing defence: %d", player.getSwingDefence()) +
+               "<br>" +
+               String.format("thrust defence: %d", player.getThrustDefence()) +
+               "<br>" +
+               String.format("magical defence: %d", player.getMagicalDefence()) +
+               "<br>" +
+               String.format("experience points: %d", player.getExperiencePoints()) +
+               "<br>"
+                // Equipped Items
+                // Potions
+                ;
+    }
 
-        statsLabel.setText(state);
+    private void customizeStatLabel() {
+        statsLabel.setText(getStatsString());
         statsLabel.setFont(InfoPanel.font);
     }
 
@@ -43,5 +74,10 @@ public class PlayerStats extends JPanel {
         setBackground(Colors.infoPanelBackgroundColor);
         setForeground(Colors.infoPanelForegroundColor);
         setBorder(BorderFactory.createEmptyBorder(0, InfoPanel.padding, InfoPanel.padding, 0));
+    }
+
+    public void updateStats() {
+        statsLabel.setText(getStatsString());
+        repaint();
     }
 }

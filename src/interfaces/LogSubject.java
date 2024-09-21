@@ -1,7 +1,7 @@
 package interfaces;
 
 public interface LogSubject {
-    void attach(LogObserver logObserver);
+    void attachLogObserver(LogObserver logObserver);
 
-    void notifyObserver(String log);
+    void notifyLogObserver(String log);
 }

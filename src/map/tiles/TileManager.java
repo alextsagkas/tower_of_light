@@ -51,12 +51,12 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         return beaconTiles.size();
     }
 
-    public void attach(LogObserver logObserver) {
+    public void attachLogObserver(LogObserver logObserver) {
         this.logObserver = logObserver;
     }
 
-    public void notifyObserver(String log) {
-        logObserver.update(log);
+    public void notifyLogObserver(String log) {
+        logObserver.updateLog(log);
     }
 
     private void loadMap() throws RuntimeException {
@@ -113,7 +113,7 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         setTile(beaconTile.getPosition(), beaconTile);
         beaconTiles.add(beaconTile);
 
-        notifyObserver(String.format("Create %d/%d beacons of light.", getBeaconTilesSize(), maxBeaconTiles));
+        notifyLogObserver(String.format("Create %d/%d beacons of light.", getBeaconTilesSize(), maxBeaconTiles));
 
         if (beaconTiles.size() == maxBeaconTiles) {
             convertToLight();
@@ -131,11 +131,11 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
             }
         }
 
-        notifyObserver(String.format("Level %d is converted from chaos to light.", gamePanel.getGameLevel()));
+        notifyLogObserver(String.format("Level %d is converted from chaos to light.", gamePanel.getGameLevel()));
         if (gamePanel.getGameLevel() < gamePanel.maxGameLevel) {
-            notifyObserver("The door to the next level has opened!");
+            notifyLogObserver("The door to the next level has opened!");
         } else {
-            notifyObserver("The door to the light has opened!");
+            notifyLogObserver("The door to the light has opened!");
         }
     }
 

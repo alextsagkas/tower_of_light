@@ -72,7 +72,7 @@ public class GameLog extends JPanel implements LogObserver {
     }
 
 
-    public void update(String log) {
+    public void updateLog(String log) {
         appendText(log + "\n");
         moveScrollBarBottom();
     }

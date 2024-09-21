@@ -10,7 +10,7 @@ import ui.Render;
 
 import java.awt.*;
 
-public final class Player implements Drawable, Updatable, Resettable, LogSubject {
+public final class Player implements Drawable, Updatable, Resettable, LogSubject, StatSubject {
     private final GamePanel gamePanel;
     private DiscreteMapPosition playerPos;
     private Direction direction;
@@ -18,6 +18,7 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
     public final int visibilityRadius;
     private int actionsNumber;
     private LogObserver logObserver;
+    private StatObserver statObserver;
 
     public Player(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -66,6 +67,14 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
 
     public void notifyObserver(String log) {
         logObserver.update(log);
+    }
+
+    public void attach(StatObserver statObserver) {
+        this.statObserver = statObserver;
+    }
+
+    public void notifyObserver() {
+        statObserver.update();
     }
 
     private void moveUp() {
@@ -145,16 +154,16 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
                 tileManager.drawBeacon(getPosition());
                 setActionsNumber(0);
             } else if (beaconTilesSize < maxBeaconTiles) {
-                notifyObserver("Beacon could not be created, because:");
+                notifyLogObserver("Beacon could not be created, because:");
                 if (minSeparation < tileManager.beaconTileSeparation) {
-                    notifyObserver(String.format(
+                    notifyLogObserver(String.format(
                             "- Shortest distance = %d < %d.",
                             minSeparation,
                             tileManager.beaconTileSeparation
                     ));
                 }
                 if (getActionsNumber() < actionCooldownNumber) {
-                    notifyObserver(String.format(
+                    notifyLogObserver(String.format(
                             "- Action cooldown = %d < %d.",
                             getActionsNumber(),
                             actionCooldownNumber

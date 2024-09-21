@@ -28,12 +28,12 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         advanceTime = false;
     }
 
-    public void attach(LogObserver logObserver) {
+    public void attachLogObserver(LogObserver logObserver) {
         this.logObserver = logObserver;
     }
 
-    public void notifyObserver(String log) {
-        logObserver.update(log);
+    public void notifyLogObserver(String log) {
+        logObserver.updateLog(log);
     }
 
     private void setUpPressed(boolean upPressed) {
@@ -121,7 +121,7 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
                 setCastBeacon(true);
                 break;
             default:
-                notifyObserver(String.format("No action assigned to key %s", KeyEvent.getKeyText(keyCode)));
+                notifyLogObserver(String.format("No action assigned to key %s", KeyEvent.getKeyText(keyCode)));
                 break;
         }
     }

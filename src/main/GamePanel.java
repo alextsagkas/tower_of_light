@@ -68,25 +68,26 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         this.win = win;
     }
 
-    public void attach(LogObserver logObserver) {
+    public void attachLogObserver(LogObserver logObserver) {
         this.logObserver = logObserver;
     }
 
-    public void notifyObserver(String log) {
-        logObserver.update(log);
+    public void notifyLogObserver(String log) {
+        logObserver.updateLog(log);
     }
 
     private void attachObservers() {
-        this.attach(game.gameLog);
-        keyHandler.attach(game.gameLog);
-        player.attach(game.gameLog);
-        tileManager.attach(game.gameLog);
+        this.attachLogObserver(game.gameLog);
+        keyHandler.attachLogObserver(game.gameLog);
+        player.attachLogObserver(game.gameLog);
+        player.attachStatObserver(game.playerStats);
+        tileManager.attachLogObserver(game.gameLog);
     }
 
     public void startGame() {
         attachObservers();
 
-        notifyObserver(String.format("The game has started on level %d.", getGameLevel()));
+        notifyLogObserver(String.format("The game has started on level %d.", getGameLevel()));
 
         while (!win) {
             if (keyHandler.isAdvanceTime()) {
@@ -123,7 +124,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
             if (getGameLevel() < maxGameLevel) {
                 setGameLevel(getGameLevel() + 1);
                 reset_components();
-                notifyObserver(String.format("The game level is %d/%d.", getGameLevel(), maxGameLevel));
+                notifyLogObserver(String.format("The game level is %d/%d.", getGameLevel(), maxGameLevel));
             } else {
                 setWin(true);
             }
