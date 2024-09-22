@@ -3,6 +3,7 @@ package map;
 public final class DiscreteMap {
     // Screen settings
     public static final int tileSize = 16;
+    public static final int itemSize = 7;
     public static final int maxScreenCol = 52;
     public static final int maxScreenRow = maxScreenCol;
 

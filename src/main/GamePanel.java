@@ -6,6 +6,7 @@ import interfaces.LogObserver;
 import interfaces.LogSubject;
 import interfaces.Resettable;
 import interfaces.Updatable;
+import items.ItemManager;
 import map.DiscreteMap;
 import map.DiscreteMapPosition;
 import map.tiles.TileManager;
@@ -24,6 +25,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     public final KeyHandler keyHandler;
     public final Player player;
     public final CollisionChecker collisionChecker;
+    public final ItemManager itemManager;
     private LogObserver logObserver;
 
     public GamePanel(Game game) {
@@ -37,6 +39,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         this.keyHandler = new KeyHandler();
         this.player = new Player(this, Game.getRace(), Game.getWarrior());
         this.collisionChecker = new CollisionChecker(this);
+        this.itemManager = new ItemManager(this);
 
         // JPanel Settings
         final int screenHeight = DiscreteMap.tileSize * DiscreteMap.maxScreenRow;
@@ -82,6 +85,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         player.attachLogObserver(game.gameLog);
         player.attachStatObserver(game.playerStats);
         tileManager.attachLogObserver(game.gameLog);
+        itemManager.attachLogObserver(game.gameLog);
     }
 
     public void startGame() {
@@ -91,9 +95,13 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
 
         while (!win) {
             if (keyHandler.isAdvanceTime()) {
-                // Update information about the game
+                // Bound to discrete time
                 update();
                 // Draw the screen with updated information
+                repaint();
+            } else if (keyHandler.isAdvanceFreeActionTime()) {
+                // Unbound of time
+                freeActions();
                 repaint();
             }
 
@@ -109,17 +117,20 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         player.reset();
         tileManager.reset();
         keyHandler.reset();
+        itemManager.reset();
     }
 
     private void restart_components() {
         player.restart();
         tileManager.restart();
         keyHandler.restart();
+        itemManager.restart();
     }
 
     private void update_components() {
         player.update();
         tileManager.update();
+        itemManager.update();
     }
 
     private void advance_level() {
@@ -140,6 +151,10 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     public void update() {
         update_components();
         advance_level();
+    }
+
+    public void freeActions() {
+        player.freeActions();
     }
 
     public void reset() {
@@ -164,6 +179,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
 
         // Draw game entities
         tileManager.draw(g2d);
+        itemManager.draw(g2d);
         player.draw(g2d);
     }
 }

@@ -56,10 +56,25 @@ public class PlayerStats extends JPanel implements StatObserver, Restartable {
                String.format("magical defence: %d", player.getMagicalDefence()) +
                "<br>" +
                String.format("experience points: %d", player.getExperiencePoints()) +
-               "<br>"
-                // Equipped Items
-                // Potions
-                ;
+               "<br>" +
+               "<br>" +
+               player.itemInventory.contentsToString() +
+               "<br>" +
+               "<br>" +
+               String.format(
+                       "main hand: %s",
+                       player.getMainHand() == null ? "none" : player.getMainHand().getItemName()
+               ) +
+               "<br>" +
+               String.format(
+                       "off hand: %s",
+                       player.getOffHand() == null ? "none" : player.getOffHand().getItemName()
+               ) +
+               "<br>" +
+               String.format(
+                       "trinket: %s",
+                       player.getTrinket() == null ? "none" : player.getTrinket().getItemName()
+               );
     }
 
     private void customizeStatLabel() {

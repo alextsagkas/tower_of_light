@@ -8,7 +8,7 @@ import ui.Colors;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameLog extends JPanel implements LogObserver, Restartable {
+public final class GameLog extends JPanel implements LogObserver, Restartable {
     private final JLabel titleLabel;
     private final JTextArea textArea;
     private final JScrollPane scrollPane;
@@ -39,7 +39,7 @@ public class GameLog extends JPanel implements LogObserver, Restartable {
 
     private void customizeTextArea() {
         textArea.setFocusable(false);
-        textArea.setRows(DiscreteMap.maxScreenRow / 4);
+        textArea.setRows(DiscreteMap.maxScreenRow / 3);
         textArea.setColumns(DiscreteMap.maxScreenCol);
         textArea.setEditable(false);
         textArea.setBackground(Colors.infoPanelBackgroundColor);
@@ -50,6 +50,7 @@ public class GameLog extends JPanel implements LogObserver, Restartable {
 
     private void customizeScrollPane() {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBorder(null);
         scrollPane.setViewportView(textArea);
     }
@@ -71,7 +72,6 @@ public class GameLog extends JPanel implements LogObserver, Restartable {
             jsb.setValue(jsb.getMaximum());
         });
     }
-
 
     public void updateLog(String log) {
         appendText(log + "\n");

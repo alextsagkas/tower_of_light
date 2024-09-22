@@ -94,4 +94,24 @@ public final class Colors {
      * gray-950
      */
     public static Color infoPanelForegroundColor = new Color(0x030712);
+
+    /**
+     * emerald-500
+     */
+    public static Color usableItemInvisibleColor = new Color(0x10b981);
+
+    /**
+     * emerald-300
+     */
+    public static Color usableItemVisibleColor = new Color(0x6ee7b7);
+
+    /**
+     * fuchsia-400
+     */
+    public static Color equipableItemInvisibleColor = new Color(0xe879f9);
+
+    /**
+     * fuchsia-200
+     */
+    public static Color equipableItemVisibleColor = new Color(0xf5d0fe);
 }

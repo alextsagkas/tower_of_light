@@ -137,6 +137,8 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         } else {
             notifyLogObserver("The door to the light has opened!");
         }
+
+        gamePanel.itemManager.convertToLight();
     }
 
     public void update() {
