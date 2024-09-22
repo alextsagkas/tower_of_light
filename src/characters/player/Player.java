@@ -344,10 +344,47 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         }
     }
 
+    private int statReplenish(int currentStat, int maxStat, double replenishFactor) {
+        int statReplenish = (int) Math.round(maxStat * replenishFactor);
+        if (statReplenish == 0) {
+            statReplenish = 1;
+        }
+
+        int replenishedStat = currentStat + statReplenish;
+        if (replenishedStat > maxStat) {
+            replenishedStat = maxStat;
+        }
+
+        return replenishedStat;
+    }
+
+    private void executeRest() {
+        if (gamePanel.keyHandler.isExecuteRest()) {
+            int maxHP = getMaxHitPoints();
+            int maxMP = getMaxManaPoints();
+            if (getHitPoints() < maxHP || getManaPoints() < maxMP) {
+                double restReplenishFactor = 0.05;
+                if (getHitPoints() < getMaxHitPoints()) {
+                    int hpReplenish = statReplenish(getHitPoints(), maxHP, restReplenishFactor);
+                    setHitPoints(hpReplenish);
+                }
+                if (getManaPoints() < getMaxManaPoints()) {
+                    int mpReplenish = statReplenish(getManaPoints(), maxMP, restReplenishFactor);
+                    setManaPoints(mpReplenish);
+                }
+                notifyStatObserver();
+                notifyLogObserver("Resting...");
+            } else {
+                notifyLogObserver("Rest makes no effect, since HP and MP are full.");
+            }
+        }
+    }
+
     public void update() {
         move();
         executeBeacon();
         updateLevel();
+        executeRest();
     }
 
     public void draw(Graphics2D g2d) {

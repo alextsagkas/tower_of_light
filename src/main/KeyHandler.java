@@ -12,6 +12,7 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
     private boolean castBeacon;
+    private boolean executeRest;
     private boolean advanceTime;
     private LogObserver logObserver;
 
@@ -56,6 +57,8 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         this.castBeacon = castBeacon;
     }
 
+    private void setExecuteRest(boolean executeRest) {this.executeRest = executeRest;}
+
     private void setAdvanceTime(boolean advanceTime) {
         this.advanceTime = advanceTime;
     }
@@ -79,6 +82,8 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
     public boolean isCastBeacon() {
         return castBeacon;
     }
+
+    public boolean isExecuteRest() {return executeRest;}
 
     public boolean isAdvanceTime() {
         return advanceTime;
@@ -120,6 +125,9 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
             case KeyEvent.VK_L:
                 setCastBeacon(true);
                 break;
+            case KeyEvent.VK_R:
+                setExecuteRest(true);
+                break;
             default:
                 notifyLogObserver(String.format("No action assigned to key %s", KeyEvent.getKeyText(keyCode)));
                 break;
@@ -147,6 +155,9 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
                 break;
             case KeyEvent.VK_L:
                 setCastBeacon(false);
+                break;
+            case KeyEvent.VK_R:
+                setExecuteRest(false);
                 break;
             default:
                 break;
