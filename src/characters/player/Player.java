@@ -336,10 +336,10 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
 
         if (level != getLevel()) {
             setLevel(level);
-            notifyLogObserver(String.format("player's level is %d", getLevel()));
+            notifyLogObserver(String.format("Player's level is %d.", getLevel()));
             notifyStatObserver();
             warrior.updateStats(this);
-            notifyLogObserver("stats have been updated");
+            notifyLogObserver("Player's stats have been updated.");
         }
     }
 

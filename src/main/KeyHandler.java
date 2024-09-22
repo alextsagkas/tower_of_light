@@ -129,7 +129,7 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
                 setExecuteRest(true);
                 break;
             default:
-                notifyLogObserver(String.format("No action assigned to key %s", KeyEvent.getKeyText(keyCode)));
+                notifyLogObserver(String.format("No action assigned to key %s.", KeyEvent.getKeyText(keyCode)));
                 break;
         }
     }
