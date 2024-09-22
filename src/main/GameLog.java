@@ -1,13 +1,14 @@
 package main;
 
 import interfaces.LogObserver;
+import interfaces.Restartable;
 import map.DiscreteMap;
 import ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GameLog extends JPanel implements LogObserver {
+public class GameLog extends JPanel implements LogObserver, Restartable {
     private final JLabel titleLabel;
     private final JTextArea textArea;
     private final JScrollPane scrollPane;
@@ -75,5 +76,9 @@ public class GameLog extends JPanel implements LogObserver {
     public void updateLog(String log) {
         appendText(log + "\n");
         moveScrollBarBottom();
+    }
+
+    public void restart() {
+        textArea.setText("Player stats have been refreshed." + "\n");
     }
 }

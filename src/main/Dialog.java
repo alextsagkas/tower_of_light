@@ -6,10 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class Dialog {
-    private final GamePanel gamePanel;
+    private final Game game;
 
-    public Dialog(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public Dialog(Game game) {
+        this.game = game;
     }
 
     public void showWinDialog(JFrame frame) {
@@ -19,7 +19,7 @@ public final class Dialog {
 
         // Message label
         JLabel messageLabel = new JLabel(
-                String.format("You converted all %d tower levers to light!", gamePanel.maxGameLevel),
+                String.format("You converted all %d tower levers to light!", game.gamePanel.maxGameLevel),
                 SwingConstants.CENTER
         );
         winDialog.add(messageLabel, BorderLayout.CENTER);
@@ -30,7 +30,7 @@ public final class Dialog {
 
         // Dialog properties
         winDialog.setSize(400, 200);
-        winDialog.setLocationRelativeTo(gamePanel); // Center the dialog over the gamePanel
+        winDialog.setLocationRelativeTo(game.gamePanel); // Center the dialog over the gamePanel
         winDialog.setVisible(true);
     }
 
@@ -43,7 +43,7 @@ public final class Dialog {
 
         // Button actions
         resetButton.addActionListener(_ -> {
-            gamePanel.restart();
+            game.restart();
             winDialog.dispose();
         });
         closeButton.addActionListener(_ -> System.exit(0));

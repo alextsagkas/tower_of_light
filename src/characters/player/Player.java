@@ -245,7 +245,6 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         this.warrior.updateStats(this);
         setHitPoints(getMaxHitPoints());
         setManaPoints(getMaxManaPoints());
-        notifyStatObserver();
     }
 
     private void move() {

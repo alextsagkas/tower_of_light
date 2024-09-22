@@ -2,11 +2,12 @@ package main;
 
 import characters.player.Race;
 import characters.player.Warrior;
+import interfaces.Restartable;
 
 import javax.swing.*;
 import java.awt.*;
 
-public final class Game {
+public final class Game implements Restartable {
     private final JFrame window;
     public final GamePanel gamePanel;
     public final InfoPanel infoPanel;
@@ -67,11 +68,17 @@ public final class Game {
 
             // Dialogs
             if (gamePanel.isWin()) {
-                Dialog winDialog = new Dialog(gamePanel);
+                Dialog winDialog = new Dialog(this);
                 winDialog.showWinDialog(window);
             }
         }
 
+    }
+
+    public void restart() {
+        gamePanel.restart();
+        playerStats.restart();
+        gameLog.restart();
     }
 
     public static void main(String[] args) {

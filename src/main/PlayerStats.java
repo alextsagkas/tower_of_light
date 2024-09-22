@@ -1,13 +1,14 @@
 package main;
 
 import characters.player.Player;
+import interfaces.Restartable;
 import interfaces.StatObserver;
 import ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayerStats extends JPanel implements StatObserver {
+public class PlayerStats extends JPanel implements StatObserver, Restartable {
     private final Player player;
     private final JLabel titleLabel;
     private final JLabel statsLabel;
@@ -77,5 +78,9 @@ public class PlayerStats extends JPanel implements StatObserver {
     public void updateStats() {
         statsLabel.setText(getStatsString());
         repaint();
+    }
+
+    public void restart() {
+        updateStats();
     }
 }
