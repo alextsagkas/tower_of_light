@@ -12,16 +12,17 @@ public final class Dialog {
         this.game = game;
     }
 
-    public void showWinDialog(JFrame frame) {
+    public void showWinDialog(
+            JFrame frame,
+            String title,
+            String message
+    ) {
         // Create the dialog
-        JDialog winDialog = new JDialog(frame, "You Win!", true);
+        JDialog winDialog = new JDialog(frame, title, true);
         winDialog.setLayout(new BorderLayout());
 
         // Message label
-        JLabel messageLabel = new JLabel(
-                String.format("You converted all %d tower levers to light!", game.gamePanel.maxGameLevel),
-                SwingConstants.CENTER
-        );
+        JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
         winDialog.add(messageLabel, BorderLayout.CENTER);
 
         // Buttons panel

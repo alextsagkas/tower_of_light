@@ -29,7 +29,7 @@ public class PlayerStats extends JPanel implements StatObserver, Restartable {
 
     private void customizeTitleLabel() {
         String title = "<html>" +
-                       "<h2>======== Player Stats ========</h2>";
+                       "<h3>======== Player Stats ========</h3>";
         titleLabel.setText(title);
         titleLabel.setFont(InfoPanel.font);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -57,9 +57,7 @@ public class PlayerStats extends JPanel implements StatObserver, Restartable {
                "<br>" +
                String.format("experience points: %d", player.getExperiencePoints()) +
                "<br>" +
-               "<br>" +
                player.itemInventory.contentsToString() +
-               "<br>" +
                "<br>" +
                String.format(
                        "main hand: %s",

@@ -6,6 +6,12 @@ import ui.Colors;
 import java.awt.*;
 
 public abstract class Item {
+    // Think about what makes more sense from the below points:
+    // 1. make item's that are on an entity change their position as the entity
+    //    changes his (e.g. with a pattern like observer/subject), or
+    // 2. change the position of items to the correct one (entity's position) only
+    //    when it is needed to be changed (like in the following code)?
+    // Result: picked the (2.) for now -> simpler to implement, more performant.
     private DiscreteMapPosition position;
 
     private Color invisibleColor;

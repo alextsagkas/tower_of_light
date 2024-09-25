@@ -31,7 +31,7 @@ public final class GameLog extends JPanel implements LogObserver, Restartable {
     }
 
     private void customizeTitleLabel() {
-        String title = "<html>" + "<h2>========= Transcript =========</h2>" + "<br>";
+        String title = "<html>" + "<h3>========= Transcript =========</h3>" + "<br>";
         titleLabel.setText(title);
         titleLabel.setFont(InfoPanel.font);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -39,7 +39,7 @@ public final class GameLog extends JPanel implements LogObserver, Restartable {
 
     private void customizeTextArea() {
         textArea.setFocusable(false);
-        textArea.setRows(DiscreteMap.maxScreenRow / 3);
+        textArea.setRows(DiscreteMap.maxScreenRow / 4);
         textArea.setColumns(DiscreteMap.maxScreenCol);
         textArea.setEditable(false);
         textArea.setBackground(Colors.infoPanelBackgroundColor);

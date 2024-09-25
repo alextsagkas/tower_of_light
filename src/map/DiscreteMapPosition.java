@@ -1,5 +1,6 @@
 package map;
 
+import characters.Direction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,6 +74,38 @@ public final class DiscreteMapPosition {
         return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }
 
+    /**
+     * Get the direction on which if {@code this} moves will reduce the distance between it
+     * and {@code other} the most.
+     *
+     * @param other a position on the map.
+     * @return the direction on which the distance between {@code this} and {@code other} will
+     * have the least value.
+     */
+    public Direction closestDirectionTo(@NotNull DiscreteMapPosition other) {
+        DiscreteMapPosition above = this.above();
+        DiscreteMapPosition below = this.below();
+        DiscreteMapPosition left = this.left();
+        DiscreteMapPosition right = this.right();
+
+        Direction closestDirection = Direction.UP;
+        int minDistance = above.distanceTo(other);
+
+        if (below.distanceTo(other) <= minDistance) {
+            closestDirection = Direction.DOWN;
+            minDistance = below.distanceTo(other);
+        }
+        if (left.distanceTo(other) <= minDistance) {
+            closestDirection = Direction.LEFT;
+            minDistance = left.distanceTo(other);
+        }
+        if (right.distanceTo(other) <= minDistance) {
+            closestDirection = Direction.RIGHT;
+        }
+
+        return closestDirection;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {return true;}
@@ -94,8 +127,8 @@ public final class DiscreteMapPosition {
     @Override
     public @NotNull String toString() {
         return "DiscreteMapPosition{" +
-                "x=" + getX() +
-                ", y=" + getY() +
-                '}';
+               "x=" + getX() +
+               ", y=" + getY() +
+               '}';
     }
 }

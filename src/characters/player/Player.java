@@ -1,10 +1,14 @@
 package characters.player;
 
 import characters.Direction;
-import interfaces.*;
+import characters.Entity;
+import interfaces.Resettable;
+import interfaces.StatObserver;
+import items.ItemsGenerator;
 import items.effects.ItemEffect;
 import items.equipables.EquipableItem;
-import items.equipables.Weapon;
+import items.equipables.weapons.Damage;
+import items.equipables.weapons.Weapon;
 import items.usables.UsableItem;
 import main.GamePanel;
 import map.DiscreteMap;
@@ -15,14 +19,12 @@ import ui.Colors;
 import ui.Render;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class Player implements Drawable, Updatable, Resettable, LogSubject, StatSubject {
-    private final GamePanel gamePanel;
-    private DiscreteMapPosition playerPos;
-    private Direction direction;
-    private boolean collision;
+public final class Player extends Entity implements Resettable {
     public final int visibilityRadius;
     private int actionsNumber;
 
@@ -35,30 +37,19 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
 
     private int level;
 
-    private int hitPoints;
-    private int maxHitPoints;
-
     private int manaPoints;
     private int maxManaPoints;
 
     private int strength;
     private int intellect;
 
-    private int swingDefence;
-    private int thrustDefence;
-    private int magicalDefence;
-
-    private int experiencePoints;
-
-    private Weapon mainHand;
-    private Weapon offHand;
+    // TODO: off hand could have any EquipableItem (not only Weapon)
+    private EquipableItem offHand;
     private EquipableItem trinket;
 
-    private LogObserver logObserver;
-    private StatObserver statObserver;
-
     public Player(GamePanel gamePanel, Race race, Warrior warrior) {
-        this.gamePanel = gamePanel;
+        super(gamePanel);
+
         this.visibilityRadius = 6;
         this.itemInventory = new ItemInventory();
         this.race = race;
@@ -69,35 +60,7 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         restart();
     }
 
-    public enum SlotType {
-        MAIN_HAND,
-        OFF_HAND,
-        TRINKET;
-    }
-
-    public void setPosition(DiscreteMapPosition pos) {
-        this.playerPos = pos;
-    }
-
-    public DiscreteMapPosition getPosition() {
-        return playerPos;
-    }
-
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-    }
-
-    public boolean getCollision() {
-        return collision;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
+    public enum SlotType {MAIN_HAND, OFF_HAND, TRINKET}
 
     public void setActionsNumber(int actionsNumber) {
         this.actionsNumber = actionsNumber;
@@ -117,22 +80,6 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
 
     public int getLevel() {
         return level;
-    }
-
-    public void setHitPoints(int hitPoints) {
-        this.hitPoints = hitPoints;
-    }
-
-    public int getHitPoints() {
-        return hitPoints;
-    }
-
-    public void setMaxHitPoints(int maxHitPoints) {
-        this.maxHitPoints = maxHitPoints;
-    }
-
-    public int getMaxHitPoints() {
-        return maxHitPoints;
     }
 
     public void setManaPoints(int manaPoints) {
@@ -167,51 +114,11 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         return intellect;
     }
 
-    public void setSwingDefence(int swingDefence) {
-        this.swingDefence = swingDefence;
-    }
-
-    public int getSwingDefence() {
-        return swingDefence;
-    }
-
-    public void setThrustDefence(int thrustDefence) {
-        this.thrustDefence = thrustDefence;
-    }
-
-    public int getThrustDefence() {
-        return thrustDefence;
-    }
-
-    public void setMagicalDefence(int magicalDefence) {
-        this.magicalDefence = magicalDefence;
-    }
-
-    public int getMagicalDefence() {
-        return magicalDefence;
-    }
-
-    public void setExperiencePoints(int experiencePoints) {
-        this.experiencePoints = experiencePoints;
-    }
-
-    public int getExperiencePoints() {
-        return experiencePoints;
-    }
-
-    public void setMainHand(EquipableItem mainHand) {
-        this.mainHand = (Weapon) mainHand;
-    }
-
-    public Weapon getMainHand() {
-        return mainHand;
-    }
-
     public void setOffHand(EquipableItem offHand) {
-        this.offHand = (Weapon) offHand;
+        this.offHand = offHand;
     }
 
-    public Weapon getOffHand() {
+    public EquipableItem getOffHand() {
         return offHand;
     }
 
@@ -223,41 +130,54 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         this.trinket = trinket;
     }
 
-    public void attachLogObserver(LogObserver logObserver) {
-        this.logObserver = logObserver;
-    }
-
-    public void notifyLogObserver(String log) {
-        logObserver.updateLog(log);
-    }
-
+    @Override
     public void attachStatObserver(StatObserver statObserver) {
-        this.statObserver = statObserver;
-        this.itemInventory.attachStatObserver(statObserver);
+        super.attachStatObserver(statObserver);
+        itemInventory.attachStatObserver(statObserver);
     }
 
-    public void notifyStatObserver() {
-        statObserver.updateStats();
-    }
-
-    private void moveUp() {
-        setPosition(getPosition().above());
+    @Override
+    protected void moveUp() {
+        super.moveUp();
         setActionsNumber(getActionsNumber() + 1);
     }
 
-    private void moveDown() {
-        setPosition(getPosition().below());
+    @Override
+    protected void moveDown() {
+        super.moveDown();
         setActionsNumber(getActionsNumber() + 1);
     }
 
-    private void moveRight() {
-        setPosition(getPosition().right());
+    @Override
+    protected void moveRight() {
+        super.moveRight();
         setActionsNumber(getActionsNumber() + 1);
     }
 
-    private void moveLeft() {
-        setPosition(getPosition().left());
+    @Override
+    protected void moveLeft() {
+        super.moveLeft();
         setActionsNumber(getActionsNumber() + 1);
+    }
+
+    /**
+     * Initialize the main hand weapon in order to be able to deal
+     * damage when the game starts.
+     * <p>
+     * Follows the same logic as with enemies generation: all entities
+     * should be able to deal damage and the only way this is accomplished
+     * is through the equipment of weapons that contain a damage list
+     * (since it is possible for a random weapon to not contain a damage list).
+     */
+    public void initializeWeapon() {
+        EquipableItem randomWeapon = null;
+        while (
+                !(randomWeapon instanceof Weapon) ||
+                (((Weapon) randomWeapon).getDamageList().isEmpty())
+        ) {
+            randomWeapon = ItemsGenerator.randomEquipableItem(getPosition());
+        }
+        setMainHand(randomWeapon);
     }
 
     public void reset() {
@@ -282,9 +202,11 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         setMainHand(null);
         setOffHand(null);
         setTrinket(null);
+        initializeWeapon();
     }
 
-    private void move() {
+    @Override
+    protected void setDirectionBeforeMoving() {
         if (gamePanel.keyHandler.isUpPressed()) {
             setDirection(Direction.UP);
         } else if (gamePanel.keyHandler.isDownPressed()) {
@@ -296,25 +218,6 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         } else {
             setDirection(Direction.NONE);
         }
-
-        gamePanel.collisionChecker.checkTile(this);
-
-        if (!collision) {
-            switch (direction) {
-                case Direction.UP:
-                    moveUp();
-                    break;
-                case Direction.DOWN:
-                    moveDown();
-                    break;
-                case Direction.LEFT:
-                    moveLeft();
-                    break;
-                case Direction.RIGHT:
-                    moveRight();
-                    break;
-            }
-        }
     }
 
     private void executeBeacon() {
@@ -322,7 +225,7 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
             TileManager tileManager = gamePanel.tileManager;
 
             int actionCooldownNumber = 15;
-            int minSeparation = tileManager.beaconTileMinSeparation(playerPos);
+            int minSeparation = tileManager.beaconTileMinSeparation(getPosition());
             int beaconTilesSize = gamePanel.tileManager.getBeaconTilesSize();
             int maxBeaconTiles = gamePanel.tileManager.maxBeaconTiles;
 
@@ -333,6 +236,8 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
             ) {
                 tileManager.drawBeacon(getPosition());
                 setActionsNumber(0);
+                setExperiencePoints(getExperiencePoints() + 100);
+                notifyStatObserver();
             } else if (beaconTilesSize < maxBeaconTiles) {
                 notifyLogObserver("Beacon could not be created, because:");
                 if (minSeparation < tileManager.beaconTileSeparation) {
@@ -412,6 +317,7 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
                     setManaPoints(mpReplenish);
                 }
                 notifyStatObserver();
+                setActionsNumber(getActionsNumber() + 1);
             } else {
                 notifyLogObserver("Rest makes no effect, since HP and MP are full.");
             }
@@ -554,11 +460,6 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         }
 
         if (equipable != null) {
-            // TODO: Think about what makes more sense from the below points:
-            // 1. Make item's that are on the player change their position as the player
-            //    changes his (e.g. with a pattern like observer/subject), or
-            // 2. Change the position of items to the correct one (player's position) only
-            //    when it is needed to be changed (like in the following code)?
             equipable.setPosition(getPosition());
             undoEquipableItemEffects(equipable);
             gamePanel.itemManager.add(equipable);
@@ -573,17 +474,67 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
 
     private void changeWeapon() {
         if (!gamePanel.keyHandler.isChangeWeapon()) {return;}
-        changeEquipableItem(mainHand, this::setMainHand, gamePanel.itemManager::getWeapon);
+        changeEquipableItem(getMainHand(), this::setMainHand, gamePanel.itemManager::getWeapon);
     }
 
     private void changeSecondaryWeapon() {
         if (!gamePanel.keyHandler.isChangeSecondaryWeapon()) {return;}
-        changeEquipableItem(offHand, this::setOffHand, gamePanel.itemManager::getWeapon);
+        changeEquipableItem(offHand, this::setOffHand, gamePanel.itemManager::getEquipableItem);
     }
 
     private void changeTrinket() {
         if (!gamePanel.keyHandler.isChangeTrinket()) {return;}
         changeEquipableItem(trinket, this::setTrinket, gamePanel.itemManager::getEquipableItem);
+    }
+
+    private List<Damage> createAttackDamageList() {
+        List<Damage> damageList = getMainHand().getDamageList();
+        for (Damage damage : damageList) {
+            if (damage.getDamageType().equals(Damage.DamageType.SWING) ||
+                damage.getDamageType().equals(Damage.DamageType.THRUST)) {
+                damage.enhance(getStrength());
+            }
+            if (damage.getDamageType().equals(Damage.DamageType.MAGICAL)) {
+                damage.enhance(getIntellect());
+            }
+        }
+        return damageList;
+    }
+
+    private List<Damage> createSpellDamageList() {
+        List<Damage> damageList = new ArrayList<>();
+        damageList.add(new Damage(Damage.DamageType.MAGICAL, new Damage.Dice(0, 0, getIntellect())));
+        return damageList;
+    }
+
+    protected void attack() {
+        if (!gamePanel.keyHandler.isAttack()) {return;}
+        int attackProximity = 1;
+        genericAttack(
+                gamePanel.enemyManager.getEnemies(attackProximity),
+                createAttackDamageList()
+        );
+    }
+
+    private void spell() {
+        if (!gamePanel.keyHandler.isSpell()) {return;}
+
+        int manaPointsConsumption = (int) Math.round(0.05 * getMaxManaPoints());
+        if (manaPointsConsumption > getManaPoints()) {
+            notifyLogObserver("Not enough mana points to cast a spell.");
+            return;
+        }
+
+        setManaPoints(getManaPoints() - manaPointsConsumption);
+        notifyStatObserver();
+        genericAttack(
+                gamePanel.enemyManager.getEnemies(visibilityRadius),
+                createSpellDamageList()
+        );
+    }
+
+    protected void die() {
+        gamePanel.setGameOver(true);
     }
 
     public void update() {
@@ -592,6 +543,8 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
         updateLevel();
         executeRest();
         consumeUsableItems();
+        attack();
+        spell();
     }
 
     public void freeActions() {
@@ -607,9 +560,9 @@ public final class Player implements Drawable, Updatable, Resettable, LogSubject
     @Override
     public String toString() {
         return "Player{" +
-               "collision=" + collision +
-               ", playerPos=" + playerPos +
-               ", direction=" + direction +
+               "collision=" + getCollision() +
+               ", playerPos=" + getPosition() +
+               ", direction=" + getDirection() +
                '}';
     }
 }

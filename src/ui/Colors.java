@@ -114,4 +114,14 @@ public final class Colors {
      * fuchsia-200
      */
     public static Color equipableItemVisibleColor = new Color(0xf5d0fe);
+
+    /**
+     * red-300
+     */
+    public static Color enemyVisibleColor = new Color(0xfca5a5);
+
+    /**
+     * red-500
+     */
+    public static Color enemyInvisibleColor = new Color(0xef4444);
 }

@@ -75,15 +75,15 @@ abstract public class Tile implements Drawable {
 
     public void toLight() {}
 
-    private void drawUndiscovered(Graphics2D g2d) {
+    public void drawUndiscovered(Graphics2D g2d) {
         Render.drawRectangle(g2d, discreteMapPosition, Colors.undiscoveredColor);
     }
 
-    private void drawInvisible(Graphics2D g2d) {
+    public void drawInvisible(Graphics2D g2d) {
         Render.drawRectangle(g2d, discreteMapPosition, invisibleColor);
     }
 
-    private void drawVisible(Graphics2D g2d) {
+    public void drawVisible(Graphics2D g2d) {
         Render.drawRectangle(g2d, discreteMapPosition, visibleColor);
     }
 
@@ -100,11 +100,11 @@ abstract public class Tile implements Drawable {
     @Override
     public String toString() {
         return "Tile{" +
-                "discreteMapPosition=" + discreteMapPosition +
-                ", collision=" + collision +
-                ", discovered=" + discovered +
-                ", visible=" + visible +
-                '}';
+               "discreteMapPosition=" + discreteMapPosition +
+               ", collision=" + collision +
+               ", discovered=" + discovered +
+               ", visible=" + visible +
+               '}';
     }
 
 }

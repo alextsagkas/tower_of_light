@@ -114,6 +114,7 @@ public final class TileManager implements Updatable, Resettable, LogSubject {
         beaconTiles.add(beaconTile);
 
         notifyLogObserver(String.format("Create %d/%d beacons of light.", getBeaconTilesSize(), maxBeaconTiles));
+        gamePanel.enemyManager.updateOnBeaconCreation();
 
         if (beaconTiles.size() == maxBeaconTiles) {
             convertToLight();

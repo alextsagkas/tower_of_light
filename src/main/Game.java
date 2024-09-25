@@ -13,6 +13,7 @@ public final class Game implements Restartable {
     public final InfoPanel infoPanel;
     public final PlayerStats playerStats;
     public final GameLog gameLog;
+    public final EnemiesLog enemiesLog;
     private static Race race;
     private static Warrior warrior;
 
@@ -22,10 +23,12 @@ public final class Game implements Restartable {
 
         // Information panel
         playerStats = new PlayerStats(gamePanel.player);
+        enemiesLog = new EnemiesLog(gamePanel.enemyManager);
         gameLog = new GameLog();
 
         infoPanel = new InfoPanel();
         infoPanel.add(playerStats, BorderLayout.NORTH);
+        infoPanel.add(enemiesLog, BorderLayout.CENTER);
         infoPanel.add(gameLog, BorderLayout.SOUTH);
 
         // Whole window
@@ -69,7 +72,23 @@ public final class Game implements Restartable {
             // Dialogs
             if (gamePanel.isWin()) {
                 Dialog winDialog = new Dialog(this);
-                winDialog.showWinDialog(window);
+                winDialog.showWinDialog(
+                        window,
+                        "You Win!",
+                        String.format("You converted all %d tower levels to light.", gamePanel.maxGameLevel)
+                );
+            } else if (gamePanel.isGameOver()) {
+                Dialog gameOverDialog = new Dialog(this);
+                gameOverDialog.showWinDialog(
+                        window,
+                        "Game Over!",
+                        String.format(
+                                "You manged to convert %d/%d levels to light.",
+                                gamePanel.getGameLevel() - 1,
+                                gamePanel.maxGameLevel
+                        )
+
+                );
             }
         }
 

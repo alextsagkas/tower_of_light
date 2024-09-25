@@ -6,8 +6,7 @@ import interfaces.LogSubject;
 import interfaces.Resettable;
 import interfaces.Updatable;
 import items.equipables.EquipableItem;
-import items.equipables.Weapon;
-import items.usables.HealthPotion;
+import items.equipables.weapons.Weapon;
 import items.usables.UsableItem;
 import main.GamePanel;
 import map.DiscreteMapPosition;
@@ -27,21 +26,9 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         this.gamePanel = gamePanel;
         this.usableItems = new HashMap<>();
         this.equipableItems = new HashMap<>();
-
-        // TODO: remove those when done with testing
-        add(new HealthPotion(DiscreteMapPosition.of(10, 40)));
-        add(new HealthPotion(DiscreteMapPosition.of(13, 40)));
-
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 40)));
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 40)));
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 40)));
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 40)));
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 40)));
-        add(ItemsGenerator.randomEquipableItem(DiscreteMapPosition.of(10, 50)));
-        // TODO: remove those when done with testing
     }
 
-    private void add(UsableItem item) {
+    public void add(UsableItem item) {
         DiscreteMapPosition position = item.getPosition();
 
         LinkedList<UsableItem> items;

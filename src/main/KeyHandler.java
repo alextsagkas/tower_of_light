@@ -18,6 +18,8 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
     private boolean changeWeapon;
     private boolean changeSecondaryWeapon;
     private boolean changeTrinket;
+    private boolean attack;
+    private boolean spell;
     private boolean advanceTime;
     private boolean advanceFreeActionTime;
     private LogObserver logObserver;
@@ -36,6 +38,8 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         changeWeapon = false;
         changeTrinket = false;
         changeSecondaryWeapon = false;
+        attack = false;
+        spell = false;
         advanceTime = false;
         advanceFreeActionTime = false;
     }
@@ -92,6 +96,14 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         this.changeTrinket = changeTrinket;
     }
 
+    public void setAttack(boolean attack) {
+        this.attack = attack;
+    }
+
+    public void setSpell(boolean spell) {
+        this.spell = spell;
+    }
+
     private void setAdvanceTime(boolean advanceTime) {
         this.advanceTime = advanceTime;
     }
@@ -142,6 +154,14 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         return changeTrinket;
     }
 
+    public boolean isAttack() {
+        return attack;
+    }
+
+    public boolean isSpell() {
+        return spell;
+    }
+
     public boolean isAdvanceTime() {
         return advanceTime;
     }
@@ -162,6 +182,8 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
         setChangeWeapon(false);
         setChangeSecondaryWeapon(false);
         setChangeTrinket(false);
+        setAttack(false);
+        setSpell(false);
         setAdvanceTime(false);
         setAdvanceFreeActionTime(false);
     }
@@ -220,6 +242,14 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
                 setChangeTrinket(true);
                 setAdvanceFreeActionTime(true);
                 break;
+            case KeyEvent.VK_SPACE:
+                setAttack(true);
+                setAdvanceTime(true);
+                break;
+            case KeyEvent.VK_X:
+                setSpell(true);
+                setAdvanceTime(true);
+                break;
             default:
                 notifyLogObserver(String.format("No action assigned to key %s.", KeyEvent.getKeyText(keyCode)));
                 break;
@@ -273,6 +303,14 @@ public final class KeyHandler implements KeyListener, Resettable, LogSubject {
             case KeyEvent.VK_U:
                 setChangeTrinket(false);
                 setAdvanceFreeActionTime(false);
+                break;
+            case KeyEvent.VK_SPACE:
+                setAttack(false);
+                setAdvanceTime(false);
+                break;
+            case KeyEvent.VK_X:
+                setSpell(false);
+                setAdvanceTime(false);
                 break;
             default:
                 break;

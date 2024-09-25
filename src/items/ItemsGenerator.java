@@ -4,7 +4,11 @@ import characters.player.Player;
 import items.effects.ItemEffect;
 import items.effects.ItemEffect.ItemEffectType;
 import items.equipables.EquipableItem;
-import items.equipables.Weapon;
+import items.equipables.weapons.Damage;
+import items.equipables.weapons.Weapon;
+import items.usables.HealthPotion;
+import items.usables.ManaPotion;
+import items.usables.UsableItem;
 import map.DiscreteMapPosition;
 
 import java.util.ArrayList;
@@ -100,6 +104,17 @@ public final class ItemsGenerator {
                nameSuffix[rng.nextInt(nameSuffix.length)];
     }
 
+    public static UsableItem randomUsableItem(DiscreteMapPosition position) {
+        Random rng = new Random();
+
+        UsableItem[] itemProbabilities = {
+                new HealthPotion(position), new HealthPotion(position), new HealthPotion(position),
+                new ManaPotion(position), new ManaPotion(position)
+        };
+
+        return itemProbabilities[rng.nextInt(itemProbabilities.length)];
+    }
+
     public static EquipableItem randomEquipableItem(DiscreteMapPosition position) {
         Random rng = new Random();
 
@@ -124,8 +139,15 @@ public final class ItemsGenerator {
                 ItemEffectType.INT_BOOST,
 
         };
+        Integer[] damageAmounts = {0, 0, 0}; // SWING, THRUST, MAGICAL
+        Damage.DamageType[] damageTypes = {
+                Damage.DamageType.SWING,
+                Damage.DamageType.THRUST,
+                Damage.DamageType.MAGICAL
+        };
         for (int totalBonus = rarity.getTotalBonus(); totalBonus > 0; totalBonus--) {
             bonusNumbers[rng.nextInt(bonusNumbers.length)]++;
+            damageAmounts[rng.nextInt(damageAmounts.length)]++;
         }
 
         List<ItemEffect> itemEffects = new ArrayList<>();
@@ -135,9 +157,21 @@ public final class ItemsGenerator {
             }
         }
 
+        List<Damage> damages = new ArrayList<>();
+        for (int i = 0; i < damageAmounts.length; i++) {
+            if (damageAmounts[i] > 0) {
+                damages.add(
+                        new Damage(
+                                damageTypes[i],
+                                new Damage.Dice(bonusNumbers[i], 6, 2)
+                        )
+                );
+            }
+        }
+
         boolean isWeapon = slotType == Player.SlotType.MAIN_HAND || slotType == Player.SlotType.OFF_HAND;
         if (isWeapon) {
-            return new Weapon(position, itemEffects, itemName);
+            return new Weapon(position, itemEffects, damages, itemName);
         } else {
             return new EquipableItem(position, itemEffects, itemName);
         }

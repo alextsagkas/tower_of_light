@@ -1,6 +1,6 @@
 package characters;
 
-import characters.player.Player;
+import characters.enemies.Enemy;
 import main.GamePanel;
 import map.DiscreteMapPosition;
 import map.tiles.Tile;
@@ -13,19 +13,40 @@ public final class CollisionChecker {
         this.gamePanel = gamePanel;
     }
 
-    private boolean isAllowedPosition(DiscreteMapPosition position) {
+    public boolean checkTileAllowed(DiscreteMapPosition position) {
         Tile nearTile = gamePanel.tileManager.getTile(position);
         return !nearTile.getCollision();
     }
 
-    public void checkTile(@NotNull Player player) {
-        boolean isAllowed = switch (player.getDirection()) {
-            case Direction.UP -> isAllowedPosition(player.getPosition().above());
-            case Direction.DOWN -> isAllowedPosition(player.getPosition().below());
-            case Direction.LEFT -> isAllowedPosition(player.getPosition().left());
-            case Direction.RIGHT -> isAllowedPosition(player.getPosition().right());
+    private boolean checkPlayerAllowed(DiscreteMapPosition position) {
+        DiscreteMapPosition playerPosition = gamePanel.player.getPosition();
+        return !playerPosition.equals(position);
+    }
+
+    private boolean checkEnemiesAllowed(DiscreteMapPosition position) {
+        for (Enemy enemy : gamePanel.enemyManager.getGeneratedEnemies()) {
+            if (enemy.getPosition().equals(position)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isAllowedPosition(DiscreteMapPosition position) {
+        if (!checkTileAllowed(position)) {return false;}
+        if (!checkPlayerAllowed(position)) {return false;}
+        if (!checkEnemiesAllowed(position)) {return false;}
+        return true;
+    }
+
+    public void checkPosition(@NotNull Entity entity) {
+        boolean isAllowed = switch (entity.getDirection()) {
+            case Direction.UP -> isAllowedPosition(entity.getPosition().above());
+            case Direction.DOWN -> isAllowedPosition(entity.getPosition().below());
+            case Direction.LEFT -> isAllowedPosition(entity.getPosition().left());
+            case Direction.RIGHT -> isAllowedPosition(entity.getPosition().right());
             default -> true;
         };
-        player.setCollision(!isAllowed);
+        entity.setCollision(!isAllowed);
     }
 }

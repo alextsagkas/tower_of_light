@@ -1,6 +1,7 @@
 package main;
 
 import characters.CollisionChecker;
+import characters.enemies.EnemyManager;
 import characters.player.Player;
 import interfaces.LogObserver;
 import interfaces.LogSubject;
@@ -19,6 +20,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     private int gameLevel;
     public final int maxGameLevel;
     private boolean win;
+    private boolean gameOver;
 
     public final Game game;
     public final TileManager tileManager;
@@ -26,6 +28,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     public final Player player;
     public final CollisionChecker collisionChecker;
     public final ItemManager itemManager;
+    public final EnemyManager enemyManager;
     private LogObserver logObserver;
 
     public GamePanel(Game game) {
@@ -33,6 +36,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         gameLevel = 1;
         maxGameLevel = 6;
         win = false;
+        gameOver = false;
 
         this.game = game;
         this.tileManager = new TileManager(this);
@@ -40,6 +44,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         this.player = new Player(this, Game.getRace(), Game.getWarrior());
         this.collisionChecker = new CollisionChecker(this);
         this.itemManager = new ItemManager(this);
+        this.enemyManager = new EnemyManager(this);
 
         // JPanel Settings
         final int screenHeight = DiscreteMap.tileSize * DiscreteMap.maxScreenRow;
@@ -71,6 +76,14 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         this.win = win;
     }
 
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
     public void attachLogObserver(LogObserver logObserver) {
         this.logObserver = logObserver;
     }
@@ -86,6 +99,8 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         player.attachStatObserver(game.playerStats);
         tileManager.attachLogObserver(game.gameLog);
         itemManager.attachLogObserver(game.gameLog);
+        enemyManager.attachLogObserver(game.gameLog);
+        enemyManager.attachStatObserver(game.enemiesLog);
     }
 
     public void startGame() {
@@ -93,7 +108,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
 
         notifyLogObserver(String.format("The game has started on level %d.", getGameLevel()));
 
-        while (!win) {
+        while (!win && !gameOver) {
             if (keyHandler.isAdvanceTime()) {
                 // Bound to discrete time
                 update();
@@ -118,6 +133,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         tileManager.reset();
         keyHandler.reset();
         itemManager.reset();
+        enemyManager.reset();
     }
 
     private void restart_components() {
@@ -125,12 +141,14 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         tileManager.restart();
         keyHandler.restart();
         itemManager.restart();
+        enemyManager.restart();
     }
 
     private void update_components() {
         player.update();
         tileManager.update();
         itemManager.update();
+        enemyManager.update();
     }
 
     private void advance_level() {
@@ -160,6 +178,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     public void reset() {
         setGameLevel(1);
         setWin(false);
+        setGameOver(false);
         reset_components();
     }
 
@@ -167,6 +186,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     public void restart() {
         setGameLevel(1);
         setWin(false);
+        setGameOver(false);
         restart_components();
         repaint();
     }
@@ -180,6 +200,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
         // Draw game entities
         tileManager.draw(g2d);
         itemManager.draw(g2d);
+        enemyManager.draw(g2d);
         player.draw(g2d);
     }
 }
