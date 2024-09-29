@@ -5,6 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
+/**
+ * Follow the Decorator pattern to provide abstract Tile decorator functionality.
+ * The class can be extended to provide a concrete decorator.
+ */
 abstract public class TileDecorator extends Tile {
     Tile tile;
 

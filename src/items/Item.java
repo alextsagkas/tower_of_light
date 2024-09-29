@@ -1,11 +1,16 @@
 package items;
 
+import interfaces.Drawable;
 import map.DiscreteMapPosition;
 import ui.Colors;
 
 import java.awt.*;
 
-public abstract class Item {
+/**
+ * Abstract functionality of an Item. Provide interfaces for drawing and
+ * positioning an item on the map.
+ */
+public abstract class Item implements Drawable {
     // Think about what makes more sense from the below points:
     // 1. make item's that are on an entity change their position as the entity
     //    changes his (e.g. with a pattern like observer/subject), or

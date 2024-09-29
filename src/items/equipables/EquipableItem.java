@@ -9,6 +9,9 @@ import ui.Render;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Aggregate EquipableItem functionality and allow subclassing to complete the class.
+ */
 public class EquipableItem extends Item {
     private final List<ItemEffect> itemEffects;
     private final String itemName;
@@ -38,8 +41,8 @@ public class EquipableItem extends Item {
     public List<ItemEffect> getUndoItemEffects() {
         return itemEffects.stream()
                           .map(itemEffect -> new ItemEffect(
-                                  itemEffect.getItemEffectType(),
-                                  -itemEffect.getStatEnhancement()
+                                  itemEffect.itemEffectType(),
+                                  -itemEffect.statEnhancement()
                           ))
                           .toList();
     }

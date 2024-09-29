@@ -1,6 +1,7 @@
 package characters.enemies;
 
 import main.GamePanel;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -12,7 +13,7 @@ public abstract class Herald extends Enemy {
     @Override
     protected void receiveDamage(
             int damageAmount,
-            Supplier<Integer> defenseSupplier
+            @NotNull Supplier<Integer> defenseSupplier
     ) {
         int defenseAmount = defenseSupplier.get();
 

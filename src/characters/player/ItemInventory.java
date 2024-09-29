@@ -6,6 +6,8 @@ import interfaces.StatSubject;
 import interfaces.Updatable;
 import items.effects.ItemEffect;
 import items.usables.UsableItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +34,7 @@ public final class ItemInventory implements Updatable, Restartable, StatSubject 
         notifyStatObserver();
     }
 
-    public UsableItem getItemType(ItemEffect.ItemEffectType itemEffectType) {
+    public @Nullable UsableItem getItemType(ItemEffect.ItemEffectType itemEffectType) {
         for (UsableItem usableItem : usableItemsList) {
             for (ItemEffect.ItemEffectType effectItemEffectType : usableItem.discreteItemEffectTypes()) {
                 if (effectItemEffectType.equals(itemEffectType)) {
@@ -56,10 +58,10 @@ public final class ItemInventory implements Updatable, Restartable, StatSubject 
                               .sum();
     }
 
-    public String contentsToString() {
+    public @NotNull String contentsToString(List<ItemEffect.ItemEffectType> itemEffectTypes) {
         final StringBuilder inventoryContents = new StringBuilder();
 
-        for (ItemEffect.ItemEffectType itemEffectType : ItemEffect.ItemEffectType.values()) {
+        for (ItemEffect.ItemEffectType itemEffectType : itemEffectTypes) {
             long count = numberOfItemsWithItemEffectType(itemEffectType);
             long totalUsesRemaining = numberOfUsesForItemsWithItemEffectType(itemEffectType);
             inventoryContents.append(

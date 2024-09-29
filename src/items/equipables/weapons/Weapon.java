@@ -7,6 +7,9 @@ import map.DiscreteMapPosition;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wrap EquipableItem with additional method to cause return a damage list.
+ */
 public class Weapon extends EquipableItem {
     private final List<Damage> damageList;
 

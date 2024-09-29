@@ -3,6 +3,7 @@ package main;
 import characters.enemies.EnemyManager;
 import interfaces.Restartable;
 import interfaces.StatObserver;
+import org.jetbrains.annotations.NotNull;
 import ui.Colors;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public final class EnemiesLog extends JPanel implements StatObserver, Restartabl
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private String getEnemiesString() {
+    private @NotNull String getEnemiesString() {
         return enemyManager.humanReadable();
     }
 
@@ -46,7 +47,7 @@ public final class EnemiesLog extends JPanel implements StatObserver, Restartabl
 
     private void customizePanel() {
         add(titleLabel, BorderLayout.NORTH);
-        add(enemiesLabel, BorderLayout.SOUTH);
+        add(enemiesLabel, BorderLayout.CENTER);
         setBackground(Colors.infoPanelBackgroundColor);
         setForeground(Colors.infoPanelForegroundColor);
         setBorder(BorderFactory.createEmptyBorder(0, InfoPanel.padding, InfoPanel.padding, 0));

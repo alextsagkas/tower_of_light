@@ -6,6 +6,10 @@ import map.DiscreteMapPosition;
 import map.tiles.Tile;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Considers if the position an entity is going to move is viable and available.
+ * E.g. it is not taken by another entity, and it is not an obstacle on the map.
+ */
 public final class CollisionChecker {
     GamePanel gamePanel;
 
@@ -39,6 +43,12 @@ public final class CollisionChecker {
         return true;
     }
 
+    /**
+     * Provide feedback for the choice of a future position. Takes into account the direction
+     * of the entity and set its collision property accordingly.
+     *
+     * @param entity the entity for which to check the future position it wishes for.
+     */
     public void checkPosition(@NotNull Entity entity) {
         boolean isAllowed = switch (entity.getDirection()) {
             case Direction.UP -> isAllowedPosition(entity.getPosition().above());

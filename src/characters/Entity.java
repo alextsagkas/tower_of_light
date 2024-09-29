@@ -6,11 +6,15 @@ import items.equipables.weapons.Damage;
 import items.equipables.weapons.Weapon;
 import main.GamePanel;
 import map.DiscreteMapPosition;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Abstract class that implements all the common logic of all entities (player and enemies) in the game.
+ */
 public abstract class Entity implements Drawable, Updatable, LogSubject, StatSubject {
     protected final GamePanel gamePanel;
     private DiscreteMapPosition position;
@@ -150,6 +154,12 @@ public abstract class Entity implements Drawable, Updatable, LogSubject, StatSub
 
     protected abstract void setDirectionBeforeMoving();
 
+    /**
+     * Move by setting the direction through {@link characters.Entity#setDirectionBeforeMoving()} method,
+     * which is implemented by subclasses. Before actually moving the {@link characters.CollisionChecker#checkPosition(Entity)}
+     * method is utilized for ensuring that the new position of the entity is allowed. If it is not, the entity stays at the old
+     * position.
+     */
     protected void move() {
         setDirectionBeforeMoving();
 
@@ -174,9 +184,15 @@ public abstract class Entity implements Drawable, Updatable, LogSubject, StatSub
 
     }
 
+    /**
+     * Receive damage and soothe it with defense.
+     *
+     * @param damageAmount    the damage amount dealt by the attacker.
+     * @param defenseSupplier the getter for the corresponding defense type of the defender.
+     */
     protected void receiveDamage(
             int damageAmount,
-            Supplier<Integer> defenseSupplier
+            @NotNull Supplier<Integer> defenseSupplier
     ) {
         int defenseAmount = defenseSupplier.get();
         if (defenseAmount == Integer.MAX_VALUE) {
@@ -195,7 +211,13 @@ public abstract class Entity implements Drawable, Updatable, LogSubject, StatSub
         setHitPoints(getHitPoints() - damageDealt);
     }
 
-    protected void receiveDamageType(Damage.DamageType damageType, int damageAmount) {
+    /**
+     * Receive damage based on damage type.
+     *
+     * @param damageType   the damage type.
+     * @param damageAmount the amount of damage dealt.
+     */
+    protected void receiveDamageType(Damage.@NotNull DamageType damageType, int damageAmount) {
         switch (damageType) {
             case Damage.DamageType.SWING:
                 receiveDamage(damageAmount, this::getSwingDefence);
@@ -211,7 +233,13 @@ public abstract class Entity implements Drawable, Updatable, LogSubject, StatSub
         }
     }
 
-    public void receiveAttack(List<Damage> damageList) {
+    /**
+     * Attack an entity located in unary distance (as specified by the {@link map.DiscreteMapPosition#distanceTo(DiscreteMapPosition)} method)
+     * with damage from the equipped weapon.
+     *
+     * @param damageList the damage list returned by the weapon of attack.
+     */
+    public void receiveAttack(@NotNull List<Damage> damageList) {
         for (var damage : damageList) {
             receiveDamageType(damage.getDamageType(), damage.getDamageAmount());
             notifyStatObserver();
@@ -224,8 +252,14 @@ public abstract class Entity implements Drawable, Updatable, LogSubject, StatSub
 
     protected abstract void die();
 
+    /**
+     * Attack all entities listed in the first argument with the damage specified by the second one.
+     *
+     * @param targetList attack the entities on this list.
+     * @param damageList deal the same damage to each one.
+     */
     protected void genericAttack(
-            List<Entity> targetList,
+            @NotNull List<Entity> targetList,
             List<Damage> damageList
     ) {
         if (targetList.isEmpty()) {return;}

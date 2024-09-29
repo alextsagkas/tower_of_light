@@ -1,9 +1,13 @@
 package items.equipables.weapons;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+/**
+ * Encapsulate the randomness of causing damage.
+ */
 public final class Damage {
     public enum DamageType {SWING, THRUST, MAGICAL}
 
@@ -27,7 +31,7 @@ public final class Damage {
          *               <numberOfDices>d<diceSides> + <constantAddend>
          *               }.
          */
-        public Dice(String string) {
+        public Dice(@NotNull String string) {
             String[] parts = string.split("[d+]");
             this.numberOfDices = Integer.valueOf(parts[0].trim());
             this.diceSides = Integer.valueOf(parts[1].trim());
@@ -35,7 +39,7 @@ public final class Damage {
             this.rand = new Random();
         }
 
-        public Dice(Dice other) {
+        public Dice(@NotNull Dice other) {
             this.numberOfDices = other.numberOfDices;
             this.diceSides = other.diceSides;
             this.constantAddend = other.constantAddend;
@@ -54,8 +58,9 @@ public final class Damage {
             }
         }
 
+        @Contract(pure = true)
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "Dice{" + numberOfDices + "d" + diceSides + " + " + constantAddend + "}";
         }
 
@@ -89,7 +94,7 @@ public final class Damage {
         this.damageDice = damageDice;
     }
 
-    public Damage(Damage other) {
+    public Damage(@NotNull Damage other) {
         this.damageType = other.damageType;
         this.damageDice = new Dice(other.damageDice);
     }
@@ -98,7 +103,7 @@ public final class Damage {
         return damageType;
     }
 
-    public Integer getDamageAmount() {
+    public @NotNull Integer getDamageAmount() {
         return damageDice.roll();
     }
 
@@ -106,8 +111,9 @@ public final class Damage {
         this.damageDice.addConstantAddend(damage);
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Damage{" +
                "damageType=" + damageType +
                ", damageDice=" + damageDice +

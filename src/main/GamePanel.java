@@ -93,14 +93,14 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
     }
 
     private void attachObservers() {
-        this.attachLogObserver(game.gameLog);
-        keyHandler.attachLogObserver(game.gameLog);
-        player.attachLogObserver(game.gameLog);
-        player.attachStatObserver(game.playerStats);
-        tileManager.attachLogObserver(game.gameLog);
-        itemManager.attachLogObserver(game.gameLog);
-        enemyManager.attachLogObserver(game.gameLog);
-        enemyManager.attachStatObserver(game.enemiesLog);
+        this.attachLogObserver(game.infoPanel.gameLog);
+        keyHandler.attachLogObserver(game.infoPanel.gameLog);
+        player.attachLogObserver(game.infoPanel.gameLog);
+        player.attachStatObserver(game.infoPanel.playerStats);
+        tileManager.attachLogObserver(game.infoPanel.gameLog);
+        itemManager.attachLogObserver(game.infoPanel.gameLog);
+        enemyManager.attachLogObserver(game.infoPanel.gameLog);
+        enemyManager.attachStatObserver(game.infoPanel.enemiesLog);
     }
 
     public void startGame() {
@@ -121,7 +121,7 @@ public final class GamePanel extends JPanel implements Updatable, Resettable, Lo
             }
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(68);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

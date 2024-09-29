@@ -1,8 +1,10 @@
 package characters.player;
 
+import org.jetbrains.annotations.NotNull;
+
 public final class Mage extends Warrior {
     @Override
-    protected void updateStats(Player player) {
+    protected void updateStats(@NotNull Player player) {
         switch (player.getLevel()) {
             case 1:
                 player.setMaxHitPoints(player.getMaxHitPoints() + 8);

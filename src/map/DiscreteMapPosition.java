@@ -4,12 +4,22 @@ import characters.Direction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Abstraction of positions on the game map. Useful for drawing components and
+ * also thinking about their position in a discrete manner and not per-pixel basis.
+ */
 public final class DiscreteMapPosition {
     private final int x;
     private final int xPixel;
     private final int y;
     private final int yPixel;
 
+    /**
+     * Create a position.
+     *
+     * @param x the abstract x position on the grid.
+     * @param y the abstract y position on the grid.
+     */
     private DiscreteMapPosition(int x, int y) {
         this.x = x;
         this.xPixel = x * DiscreteMap.tileSize;
@@ -17,6 +27,14 @@ public final class DiscreteMapPosition {
         this.yPixel = y * DiscreteMap.tileSize;
     }
 
+    /**
+     * Use it to generate a new position. Takes into account the
+     * map limits and ensures to never get over them.
+     *
+     * @param x the abstract x position on the grid.
+     * @param y the abstract y position on the grid.
+     * @return the asked for discrete map position.
+     */
     @Contract(value = "_, _ -> new")
     public static @NotNull DiscreteMapPosition of(int x, int y) {
         if (x >= DiscreteMap.maxScreenCol) {
@@ -34,42 +52,88 @@ public final class DiscreteMapPosition {
         return new DiscreteMapPosition(x, y);
     }
 
+    /**
+     * Get the abstract x-position of the object on the grid.
+     *
+     * @return the x-position.
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Get the x-position in pixels.
+     *
+     * @return the x-position.
+     */
     public int getXPixel() {
         return xPixel;
     }
 
+    /**
+     * Get the abstract y-position of the object on the grid.
+     *
+     * @return the y-position.
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Get the y-position in pixels.
+     *
+     * @return the y-position.
+     */
     public int getYPixel() {
         return yPixel;
     }
 
+    /**
+     * Calculate the position above the current one.
+     *
+     * @return the above position.
+     */
     @Contract(" -> new")
     public @NotNull DiscreteMapPosition above() {
         return DiscreteMapPosition.of(this.x, this.y - 1);
     }
 
+    /**
+     * Calculate the position below the current one.
+     *
+     * @return the below position.
+     */
     @Contract(" -> new")
     public @NotNull DiscreteMapPosition below() {
         return DiscreteMapPosition.of(this.x, this.y + 1);
     }
 
+    /**
+     * Calculate the position on the left the current one.
+     *
+     * @return the left position.
+     */
     @Contract(" -> new")
     public @NotNull DiscreteMapPosition left() {
         return DiscreteMapPosition.of(this.x - 1, this.y);
     }
 
+    /**
+     * Calculate the position on the right the current one.
+     *
+     * @return the right position.
+     */
     @Contract(" -> new")
     public @NotNull DiscreteMapPosition right() {
         return DiscreteMapPosition.of(this.x + 1, this.y);
     }
 
+    /**
+     * Calculate the Manhattan distance to another abstract position.
+     *
+     * @param other the other abstract position.
+     * @return the distance between the two positions.
+     */
     public int distanceTo(@NotNull DiscreteMapPosition other) {
         return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }

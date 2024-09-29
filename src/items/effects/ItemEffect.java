@@ -1,21 +1,15 @@
 package items.effects;
 
-public final class ItemEffect {
-    private final ItemEffectType itemEffectType;
-    private final int statEnhancement;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-    public ItemEffect(ItemEffectType itemEffectType, int statEnhancement) {
-        this.itemEffectType = itemEffectType;
-        this.statEnhancement = statEnhancement;
-    }
-
-    public int getStatEnhancement() {
-        return statEnhancement;
-    }
-
-    public ItemEffectType getItemEffectType() {
-        return itemEffectType;
-    }
+/**
+ * Effects items have on entity.
+ *
+ * @param itemEffectType  the effect enum.
+ * @param statEnhancement the enhancement it causes to the entity that equips it.
+ */
+public record ItemEffect(items.effects.ItemEffect.ItemEffectType itemEffectType, int statEnhancement) {
 
     public enum ItemEffectType {
         HP_REPLENISH("health replenish"),
@@ -36,8 +30,9 @@ public final class ItemEffect {
         }
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "ItemEffect{" +
                "itemEffectType=" + itemEffectType +
                ", statEnhancement=" + statEnhancement +

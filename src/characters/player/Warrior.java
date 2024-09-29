@@ -1,5 +1,11 @@
 package characters.player;
 
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Delegate the warrior-specific characteristics of player to this class.
+ * Extend it to provide a rule for player to update his stats based on his level.
+ */
 abstract public class Warrior {
     private String warrior;
 
@@ -19,7 +25,7 @@ abstract public class Warrior {
 
     abstract protected void assignWarrior();
 
-    public static Warrior parseWarrior(String warrior) throws IllegalArgumentException {
+    public static @NotNull Warrior parseWarrior(@NotNull String warrior) throws IllegalArgumentException {
         return switch (warrior) {
             case "Knight" -> new Knight();
             case "Mage" -> new Mage();

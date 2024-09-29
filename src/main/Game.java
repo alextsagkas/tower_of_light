@@ -3,6 +3,7 @@ package main;
 import characters.player.Race;
 import characters.player.Warrior;
 import interfaces.Restartable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,9 +12,6 @@ public final class Game implements Restartable {
     private final JFrame window;
     public final GamePanel gamePanel;
     public final InfoPanel infoPanel;
-    public final PlayerStats playerStats;
-    public final GameLog gameLog;
-    public final EnemiesLog enemiesLog;
     private static Race race;
     private static Warrior warrior;
 
@@ -22,14 +20,7 @@ public final class Game implements Restartable {
         gamePanel = new GamePanel(this);
 
         // Information panel
-        playerStats = new PlayerStats(gamePanel.player);
-        enemiesLog = new EnemiesLog(gamePanel.enemyManager);
-        gameLog = new GameLog();
-
-        infoPanel = new InfoPanel();
-        infoPanel.add(playerStats, BorderLayout.NORTH);
-        infoPanel.add(enemiesLog, BorderLayout.CENTER);
-        infoPanel.add(gameLog, BorderLayout.SOUTH);
+        infoPanel = new InfoPanel(this);
 
         // Whole window
         window = new JFrame();
@@ -96,11 +87,10 @@ public final class Game implements Restartable {
 
     public void restart() {
         gamePanel.restart();
-        playerStats.restart();
-        gameLog.restart();
+        infoPanel.restart();
     }
 
-    public static void main(String[] args) {
+    public static void main(String @NotNull [] args) {
         try {
             Game.setRace(Race.parseRace(args[0]));
             Game.setWarrior(Warrior.parseWarrior(args[1]));

@@ -10,14 +10,19 @@ import items.usables.HealthPotion;
 import items.usables.ManaPotion;
 import items.usables.UsableItem;
 import map.DiscreteMapPosition;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Generate random items.
+ */
 public final class ItemsGenerator {
-    public enum Rarity {
+    private enum Rarity {
         NONE(0),
         FEEBLE(1),
         COMMON(4),
@@ -35,7 +40,7 @@ public final class ItemsGenerator {
         }
     }
 
-    static String[] namePrefix = {
+    private static final String[] namePrefix = {
             "laughing",
             "deadly",
             "eternal",
@@ -47,7 +52,7 @@ public final class ItemsGenerator {
             "mysterious"
     };
 
-    static Map<Player.SlotType, List<String>> slotsMap = Map.of(
+    private final static Map<Player.SlotType, List<String>> slotsMap = Map.of(
             Player.SlotType.MAIN_HAND,
             List.of(
                     "Sword",
@@ -74,7 +79,7 @@ public final class ItemsGenerator {
             )
     );
 
-    static String[] nameSuffix = {
+    private final static String[] nameSuffix = {
             "of Doom",
             "of Pestilence",
             "of the Dead",
@@ -83,7 +88,14 @@ public final class ItemsGenerator {
             "of the Stars"
     };
 
-    public static String nameGenerator(Rarity rarity, Player.SlotType slotType) {
+    /**
+     * Generate random name for predefined prefixes, slots and suffixed.
+     *
+     * @param rarity   how rare is the item.
+     * @param slotType the slot on which it will be equipped.
+     * @return the random name.
+     */
+    private static @NotNull String nameGenerator(Rarity rarity, Player.SlotType slotType) {
         Random rng = new Random();
 
         String rarityName;
@@ -104,6 +116,12 @@ public final class ItemsGenerator {
                nameSuffix[rng.nextInt(nameSuffix.length)];
     }
 
+    /**
+     * Return a random usable item from the ones already implemented.
+     *
+     * @param position the position of the usable item.
+     * @return the random usable item.
+     */
     public static UsableItem randomUsableItem(DiscreteMapPosition position) {
         Random rng = new Random();
 
@@ -115,7 +133,14 @@ public final class ItemsGenerator {
         return itemProbabilities[rng.nextInt(itemProbabilities.length)];
     }
 
-    public static EquipableItem randomEquipableItem(DiscreteMapPosition position) {
+    /**
+     * Return a random equipable item from scratch.
+     *
+     * @param position the position of the equipable item.
+     * @return the random equipable item.
+     */
+    @Contract("_ -> new")
+    public static @NotNull EquipableItem randomEquipableItem(DiscreteMapPosition position) {
         Random rng = new Random();
 
         Rarity[] rarityProbabilities = {
@@ -176,4 +201,6 @@ public final class ItemsGenerator {
             return new EquipableItem(position, itemEffects, itemName);
         }
     }
+
+    private ItemsGenerator() {}
 }

@@ -39,7 +39,7 @@ public final class GameLog extends JPanel implements LogObserver, Restartable {
 
     private void customizeTextArea() {
         textArea.setFocusable(false);
-        textArea.setRows(DiscreteMap.maxScreenRow / 4);
+        textArea.setRows(DiscreteMap.maxScreenRow / 3);
         textArea.setColumns(DiscreteMap.maxScreenCol);
         textArea.setEditable(false);
         textArea.setBackground(Colors.infoPanelBackgroundColor);
