@@ -3,6 +3,8 @@ package characters.enemies;
 import items.equipables.weapons.SummoningStaff;
 import items.equipables.weapons.Weapon;
 import main.GamePanel;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -11,35 +13,42 @@ public final class Summoner extends Enemy {
         super(gamePanel);
     }
 
-    protected String initializeName() {
+    @Contract(pure = true)
+    protected @NotNull String initializeName() {
         return "Summoner";
     }
 
-    protected Integer initializeMaxHitPoints() {
+    @Contract(pure = true)
+    protected @NotNull Integer initializeMaxHitPoints() {
         return 40;
     }
 
-    protected Weapon initializeWeapon() {
+    @Contract(" -> new")
+    protected @NotNull Weapon initializeWeapon() {
         return new SummoningStaff(getPosition());
     }
 
-    protected Integer initializeSwingDefense() {
+    @Contract(pure = true)
+    protected @NotNull Integer initializeSwingDefense() {
         return 0;
     }
 
-    protected Integer initializeThrustDefense() {
+    @Contract(pure = true)
+    protected @NotNull Integer initializeThrustDefense() {
         return 0;
     }
 
-    protected Integer initializeMagicalDefense() {
+    @Contract(pure = true)
+    protected @NotNull Integer initializeMagicalDefense() {
         return 5;
     }
 
-    protected Integer initializeExperiencePoints() {
+    @Contract(pure = true)
+    protected @NotNull Integer initializeExperiencePoints() {
         return 60;
     }
 
-    ArrayList<Integer> initializeAppearOnLevel() {
+    @NotNull ArrayList<Integer> initializeAppearOnLevel() {
         ArrayList<Integer> appearOnLevel = new ArrayList<>();
         appearOnLevel.add(2);
         appearOnLevel.add(3);
@@ -47,7 +56,8 @@ public final class Summoner extends Enemy {
         return appearOnLevel;
     }
 
-    protected Enemy deepCopy() {
+    @Contract(" -> new")
+    protected @NotNull Enemy deepCopy() {
         return new Summoner(gamePanel);
     }
 }

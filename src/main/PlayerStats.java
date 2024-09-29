@@ -3,10 +3,13 @@ package main;
 import characters.player.Player;
 import interfaces.Restartable;
 import interfaces.StatObserver;
+import items.effects.ItemEffect;
+import org.jetbrains.annotations.NotNull;
 import ui.Colors;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class PlayerStats extends JPanel implements StatObserver, Restartable {
     private final Player player;
@@ -35,44 +38,19 @@ public class PlayerStats extends JPanel implements StatObserver, Restartable {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private String getStatsString() {
+    private @NotNull String getStatsString() {
         return "<html>" +
-               String.format("name: %s", player.getName()) +
+               player.humanReadableStats() +
                "<br>" +
-               String.format("level: %d", player.getLevel()) +
                "<br>" +
-               String.format("hit points: %d / %d", player.getHitPoints(), player.getMaxHitPoints()) +
-               "<br>" +
-               String.format("mana points: %d / %d", player.getManaPoints(), player.getMaxManaPoints()) +
-               "<br>" +
-               String.format("strength: %d", player.getStrength()) +
-               "<br>" +
-               String.format("intellect: %d", player.getIntellect()) +
-               "<br>" +
-               String.format("swing defence: %d", player.getSwingDefence()) +
-               "<br>" +
-               String.format("thrust defence: %d", player.getThrustDefence()) +
-               "<br>" +
-               String.format("magical defence: %d", player.getMagicalDefence()) +
-               "<br>" +
-               String.format("experience points: %d", player.getExperiencePoints()) +
-               "<br>" +
-               player.itemInventory.contentsToString() +
-               "<br>" +
-               String.format(
-                       "main hand: %s",
-                       player.getMainHand() == null ? "none" : player.getMainHand().getItemName()
+               player.itemInventory.contentsToString(
+                       List.of(
+                               ItemEffect.ItemEffectType.HP_REPLENISH,
+                               ItemEffect.ItemEffectType.MP_REPLENISH
+                       )
                ) +
                "<br>" +
-               String.format(
-                       "off hand: %s",
-                       player.getOffHand() == null ? "none" : player.getOffHand().getItemName()
-               ) +
-               "<br>" +
-               String.format(
-                       "trinket: %s",
-                       player.getTrinket() == null ? "none" : player.getTrinket().getItemName()
-               );
+               player.humanReadableEquipables();
     }
 
     private void customizeStatLabel() {

@@ -1,25 +1,27 @@
 package items;
 
 import characters.player.Player;
-import interfaces.LogObserver;
-import interfaces.LogSubject;
-import interfaces.Resettable;
-import interfaces.Updatable;
+import interfaces.*;
 import items.equipables.EquipableItem;
 import items.equipables.weapons.Weapon;
 import items.usables.UsableItem;
 import main.GamePanel;
 import map.DiscreteMapPosition;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Stream;
 
-public final class ItemManager implements Updatable, Resettable, LogSubject {
+/**
+ * Aggregate the item management in one class.
+ */
+public final class ItemManager implements Drawable, Updatable, Resettable, LogSubject {
     private final GamePanel gamePanel;
-    private final HashMap<DiscreteMapPosition, LinkedList<UsableItem>> usableItems;
-    private final HashMap<DiscreteMapPosition, LinkedList<EquipableItem>> equipableItems;
+    private final Map<DiscreteMapPosition, LinkedList<UsableItem>> usableItems;
+    private final Map<DiscreteMapPosition, LinkedList<EquipableItem>> equipableItems;
     private LogObserver logObserver;
 
     public ItemManager(GamePanel gamePanel) {
@@ -28,7 +30,12 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         this.equipableItems = new HashMap<>();
     }
 
-    public void add(UsableItem item) {
+    /**
+     * Add a usable item on the map.
+     *
+     * @param item the item to add.
+     */
+    public void add(@NotNull UsableItem item) {
         DiscreteMapPosition position = item.getPosition();
 
         LinkedList<UsableItem> items;
@@ -42,7 +49,12 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         usableItems.put(position, items);
     }
 
-    public void add(EquipableItem item) {
+    /**
+     * Add am equipable item on the map.
+     *
+     * @param item the equipable item to add.
+     */
+    public void add(@NotNull EquipableItem item) {
         DiscreteMapPosition position = item.getPosition();
 
         LinkedList<EquipableItem> items;
@@ -56,7 +68,13 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         equipableItems.put(position, items);
     }
 
-    public EquipableItem getEquipableItem(DiscreteMapPosition position) {
+    /**
+     * Get the equipable item from a certain position on the map.
+     *
+     * @param position the position on where to search for an item.
+     * @return the equipable item found on the position.
+     */
+    public @Nullable EquipableItem getEquipableItem(DiscreteMapPosition position) {
         LinkedList<EquipableItem> items = equipableItems.get(position);
 
         if (items == null || items.isEmpty()) {
@@ -66,7 +84,13 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         }
     }
 
-    public EquipableItem getWeapon(DiscreteMapPosition position) {
+    /**
+     * Get the weapon from a certain position on the map.
+     *
+     * @param position the position on where to search for a weapon.
+     * @return the weapon found on that position.
+     */
+    public @Nullable EquipableItem getWeapon(DiscreteMapPosition position) {
         LinkedList<EquipableItem> items = equipableItems.get(position);
 
         // No items in the position
@@ -83,6 +107,11 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         return null;
     }
 
+    /**
+     * Get a list with all the items on the map
+     *
+     * @return the item's list.
+     */
     private List<Item> itemsAggregate() {
         Stream<UsableItem> usableItemStream = usableItems.values()
                                                          .stream()  // Stream<PriorityQueue<EquipableItem>>
@@ -93,15 +122,14 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         return Stream.concat(usableItemStream, equipableItemsStream).toList();
     }
 
-    public void reset() {
-        usableItems.clear();
-        equipableItems.clear();
-    }
-
     public void attachLogObserver(LogObserver logObserver) {this.logObserver = logObserver;}
 
     public void notifyLogObserver(String log) {logObserver.updateLog(log);}
 
+    /**
+     * Convert all items to light be marking them as discovered. The purpose of this method
+     * is to be called by the one that converts the map to light.
+     */
     public void convertToLight() {
         itemsAggregate().stream()
                         .filter(item -> !item.isDiscovered())
@@ -109,6 +137,9 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         notifyLogObserver("Items have been revealed.");
     }
 
+    /**
+     * Update the visibility of the items on the map based on their relative position to player.
+     */
     private void updateVisibility() {
         Player player = gamePanel.player;
         for (Item item : itemsAggregate()) {
@@ -124,6 +155,9 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         }
     }
 
+    /**
+     * Whenever player steps on a usable item it gets added to his inventory and removed from the map.
+     */
     private void updateInventory() {
         Player player = gamePanel.player;
 
@@ -142,6 +176,9 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         }
     }
 
+    /**
+     * Notify player about the equipable items located on the tile he steps on.
+     */
     private void updateEquipment() {
         if (equipableItems.isEmpty()) {return;}
 
@@ -163,10 +200,23 @@ public final class ItemManager implements Updatable, Resettable, LogSubject {
         }
     }
 
+    /**
+     * Update the TileManager state by updating visibility of items on the map,
+     * putting usable items the player steps on in his inventory and informing him
+     * about the equipable items that he steps on.
+     */
     public void update() {
         updateVisibility();
         updateInventory();
         updateEquipment();
+    }
+
+    /**
+     * Reset the state of the ItemManager by clearing all the items from the map.
+     */
+    public void reset() {
+        usableItems.clear();
+        equipableItems.clear();
     }
 
     public void draw(Graphics2D g2d) {

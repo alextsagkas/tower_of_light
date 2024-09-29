@@ -1,5 +1,11 @@
 package characters.player;
 
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Delegate race-specific functionality of player to this class. Extend it
+ * to provide the initialization of player's stats.
+ */
 abstract public class Race {
     private String race;
 
@@ -19,7 +25,7 @@ abstract public class Race {
 
     abstract protected void assignRace();
 
-    public static Race parseRace(String race) throws IllegalArgumentException {
+    public static @NotNull Race parseRace(@NotNull String race) throws IllegalArgumentException {
         return switch (race) {
             case "Elf" -> new Elf();
             case "Human" -> new Human();

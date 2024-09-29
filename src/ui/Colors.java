@@ -121,7 +121,9 @@ public final class Colors {
     public static Color enemyVisibleColor = new Color(0xfca5a5);
 
     /**
-     * red-500
+     * red-400
      */
-    public static Color enemyInvisibleColor = new Color(0xef4444);
+    public static Color enemyInvisibleColor = new Color(0xf87171);
+
+    private Colors() {}
 }

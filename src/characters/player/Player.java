@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Provides the player logic and builds onto Entity parent class.
+ */
 public final class Player extends Entity implements Resettable {
     public final int visibilityRadius;
     private int actionsNumber;
@@ -43,7 +46,6 @@ public final class Player extends Entity implements Resettable {
     private int strength;
     private int intellect;
 
-    // TODO: off hand could have any EquipableItem (not only Weapon)
     private EquipableItem offHand;
     private EquipableItem trinket;
 
@@ -130,6 +132,50 @@ public final class Player extends Entity implements Resettable {
         this.trinket = trinket;
     }
 
+    public @NotNull String humanReadableStats() {
+        return String.format("name: %s", getName()) +
+               "<br>" +
+               String.format("level: %d", getLevel()) +
+               "<br>" +
+               String.format("experience points: %d", getExperiencePoints()) +
+               "<br>" +
+               "<br>" +
+               String.format("hit points: %d / %d", getHitPoints(), getMaxHitPoints()) +
+               "<br>" +
+               String.format("mana points: %d / %d", getManaPoints(), getMaxManaPoints()) +
+               "<br>" +
+               "<br>" +
+               String.format("strength: %d", getStrength()) +
+               "<br>" +
+               String.format("intellect: %d", getIntellect()) +
+               "<br>" +
+               "<br>" +
+               String.format("swing defence: %d", getSwingDefence()) +
+               "<br>" +
+               String.format("thrust defence: %d", getThrustDefence()) +
+               "<br>" +
+               String.format("magical defence: %d", getMagicalDefence());
+    }
+
+    public @NotNull String humanReadableEquipables() {
+        return
+                String.format(
+                        "main hand: %s",
+                        getMainHand() == null ? "none" : getMainHand().getItemName()
+                ) +
+                "<br>" +
+                String.format(
+                        "off hand: %s",
+                        getOffHand() == null ? "none" : getOffHand().getItemName()
+                ) +
+                "<br>" +
+                String.format(
+                        "trinket: %s",
+                        getTrinket() == null ? "none" : getTrinket().getItemName()
+                );
+
+    }
+
     @Override
     public void attachStatObserver(StatObserver statObserver) {
         super.attachStatObserver(statObserver);
@@ -205,6 +251,9 @@ public final class Player extends Entity implements Resettable {
         initializeWeapon();
     }
 
+    /**
+     * Set direction before moving according to key-pressing by the user.
+     */
     @Override
     protected void setDirectionBeforeMoving() {
         if (gamePanel.keyHandler.isUpPressed()) {
@@ -220,6 +269,15 @@ public final class Player extends Entity implements Resettable {
         }
     }
 
+    /**
+     * Create a beacon if the following conditions are satisfied:
+     * <ul>
+     *     <li>The minimum distance between a beacon tile and the player is {@link map.tiles.TileManager#beaconTileSeparation} .</li>
+     *     <li>The bacon tiles are less than {@link map.tiles.TileManager#maxBeaconTiles}.</li>
+     *     <li>The actions the player has executed are more than 15.</li>
+     * </ul>
+     * Provide feedback via the game transcript for why the beacon could not be created.
+     */
     private void executeBeacon() {
         if (gamePanel.keyHandler.isCastBeacon()) {
             TileManager tileManager = gamePanel.tileManager;
@@ -299,6 +357,9 @@ public final class Player extends Entity implements Resettable {
         return replenishedStat;
     }
 
+    /**
+     * Replenish hit and mana points by 0.05 percent of their full capacity if they are not full.
+     */
     private void executeRest() {
         if (gamePanel.keyHandler.isExecuteRest()) {
             int maxHP = getMaxHitPoints();
@@ -324,28 +385,28 @@ public final class Player extends Entity implements Resettable {
         }
     }
 
-    private void itemEffectOnPlayer(ItemEffect itemEffect) {
+    private void itemEffectOnPlayer(@NotNull ItemEffect itemEffect) {
         int updatedStat;
-        switch (itemEffect.getItemEffectType()) {
+        switch (itemEffect.itemEffectType()) {
             case HP_REPLENISH:
-                updatedStat = getHitPoints() + itemEffect.getStatEnhancement();
+                updatedStat = getHitPoints() + itemEffect.statEnhancement();
                 setHitPoints(Math.min(updatedStat, getMaxHitPoints()));
                 break;
             case MP_REPLENISH:
-                updatedStat = getManaPoints() + itemEffect.getStatEnhancement();
+                updatedStat = getManaPoints() + itemEffect.statEnhancement();
                 setManaPoints(Math.min(updatedStat, getMaxManaPoints()));
                 break;
             case HP_BOOST:
-                setMaxHitPoints(getMaxHitPoints() + itemEffect.getStatEnhancement());
+                setMaxHitPoints(getMaxHitPoints() + itemEffect.statEnhancement());
                 break;
             case MP_BOOST:
-                setMaxManaPoints(getMaxManaPoints() + itemEffect.getStatEnhancement());
+                setMaxManaPoints(getMaxManaPoints() + itemEffect.statEnhancement());
                 break;
             case STR_BOOST:
-                setStrength(getStrength() + itemEffect.getStatEnhancement());
+                setStrength(getStrength() + itemEffect.statEnhancement());
                 break;
             case INT_BOOST:
-                setIntellect(getIntellect() + itemEffect.getStatEnhancement());
+                setIntellect(getIntellect() + itemEffect.statEnhancement());
                 break;
             default:
                 notifyLogObserver("Item effect is non-existent.");
@@ -360,6 +421,10 @@ public final class Player extends Entity implements Resettable {
         notifyStatObserver();
     }
 
+    /**
+     * The player consumes an item from his inventory that has at least one effect of
+     * replenishing his hit points.
+     */
     private void consumeHPReplenish() {
         if (!gamePanel.keyHandler.isUseHPReplenish()) {return;}
 
@@ -384,6 +449,10 @@ public final class Player extends Entity implements Resettable {
         consumeUsableItem(usableItem);
     }
 
+    /**
+     * The player consumes an item from his inventory that has at least one effect of
+     * replenishing his mana.
+     */
     private void consumeMPReplenish() {
         if (!gamePanel.keyHandler.isUseMPReplenish()) {return;}
 
@@ -422,16 +491,10 @@ public final class Player extends Entity implements Resettable {
         itemInventory.update();
     }
 
-    private void applyEquipableItemEffects(EquipableItem equipableItem) {
+    private void applyEquipableItemEffects(@NotNull EquipableItem equipableItem) {
         for (ItemEffect itemEffect : equipableItem.getItemEffects()) {
             itemEffectOnPlayer(itemEffect);
         }
-
-        // Ensure that stats do not surpass the maximum capacity
-        // Note: This results in a miss in capacity when you drop and
-        //       equip again an item that boosts one of the following
-        //       stats, when before you drop it you had capacity above the
-        //       maximum you get yen you equip the second one.
 
         if (getHitPoints() > getMaxHitPoints()) {
             setHitPoints(getMaxHitPoints());
@@ -442,16 +505,25 @@ public final class Player extends Entity implements Resettable {
         }
     }
 
-    private void undoEquipableItemEffects(EquipableItem equipableItem) {
+    private void undoEquipableItemEffects(@NotNull EquipableItem equipableItem) {
         for (ItemEffect itemEffect : equipableItem.getUndoItemEffects()) {
             itemEffectOnPlayer(itemEffect);
         }
     }
 
+    /**
+     * Equip the EquipableItem on the player and lat the other one on the map.
+     * Also, undo the effects of the second and apply the effects of the first on
+     * player.
+     *
+     * @param equipable           the EquipableItem to be equipped on to player.
+     * @param equipableItemSetter the setter method to be used.
+     * @param getEquipableItem    the getter for method to be used.
+     */
     private void changeEquipableItem(
             EquipableItem equipable,
             Consumer<EquipableItem> equipableItemSetter,
-            Function<DiscreteMapPosition, EquipableItem> getEquipableItem
+            @NotNull Function<DiscreteMapPosition, EquipableItem> getEquipableItem
     ) {
         EquipableItem equipableItem = getEquipableItem.apply(getPosition());
         if (equipableItem == null) {
@@ -487,6 +559,11 @@ public final class Player extends Entity implements Resettable {
         changeEquipableItem(trinket, this::setTrinket, gamePanel.itemManager::getEquipableItem);
     }
 
+    /**
+     * Create damage list to attack another entity by enhancing the weapon stats with the player's.
+     *
+     * @return the enhanced damage list.
+     */
     private List<Damage> createAttackDamageList() {
         List<Damage> damageList = getMainHand().getDamageList();
         for (Damage damage : damageList) {
@@ -501,12 +578,20 @@ public final class Player extends Entity implements Resettable {
         return damageList;
     }
 
-    private List<Damage> createSpellDamageList() {
+    /**
+     * Create spell damage list by player's intellect.
+     *
+     * @return the damage list to be used to cast a spell on an entity.
+     */
+    private @NotNull List<Damage> createSpellDamageList() {
         List<Damage> damageList = new ArrayList<>();
         damageList.add(new Damage(Damage.DamageType.MAGICAL, new Damage.Dice(0, 0, getIntellect())));
         return damageList;
     }
 
+    /**
+     * Attack an entity with the weapon of the main hand.
+     */
     protected void attack() {
         if (!gamePanel.keyHandler.isAttack()) {return;}
         int attackProximity = 1;
@@ -516,6 +601,10 @@ public final class Player extends Entity implements Resettable {
         );
     }
 
+    /**
+     * Spells are thought to be executed whenever player has enough mana points.
+     * Therefore, be careful not to spill you spells when enemies are not around.
+     */
     private void spell() {
         if (!gamePanel.keyHandler.isSpell()) {return;}
 
@@ -533,10 +622,18 @@ public final class Player extends Entity implements Resettable {
         );
     }
 
+    /**
+     * Show the game over dialog that gives two options to the player.
+     * Either to restart the game or close the application.
+     */
     protected void die() {
         gamePanel.setGameOver(true);
     }
 
+    /**
+     * Update the player's state based on the keys pressed and the overall
+     * game logic.
+     */
     public void update() {
         move();
         executeBeacon();
@@ -547,6 +644,11 @@ public final class Player extends Entity implements Resettable {
         spell();
     }
 
+    /**
+     * Free actions are thought as actions the player can take that do
+     * not result in the game logic to advance. An example is the changing
+     * of equipable items from the ground.
+     */
     public void freeActions() {
         changeWeapon();
         changeSecondaryWeapon();
@@ -558,7 +660,7 @@ public final class Player extends Entity implements Resettable {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Player{" +
                "collision=" + getCollision() +
                ", playerPos=" + getPosition() +

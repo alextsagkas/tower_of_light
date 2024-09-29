@@ -10,6 +10,10 @@ import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Aggregate usable items functionalities. Provide a use() method to consume the
+ * item. Allow subclassing to extend and complete the class.
+ */
 public abstract class UsableItem extends Item {
     private int usesRemaining;
     private final List<ItemEffect> itemEffects;
@@ -40,11 +44,16 @@ public abstract class UsableItem extends Item {
 
     public List<ItemEffect.ItemEffectType> discreteItemEffectTypes() {
         return itemEffects.stream()
-                          .map(ItemEffect::getItemEffectType)
+                          .map(ItemEffect::itemEffectType)
                           .distinct()
                           .collect(Collectors.toList());
     }
 
+    /**
+     * Get the ItemEffects list of the usable item.
+     *
+     * @return the ItemEffects list that will be applied to the entity upon the item's use.
+     */
     public List<ItemEffect> use() {
         if (getUsesRemaining() == 0) {
             return List.of();

@@ -3,13 +3,17 @@ package characters.enemies;
 import characters.Entity;
 import interfaces.*;
 import main.GamePanel;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class EnemyManager implements Updatable, Resettable, Restartable, LogSubject, StatSubject {
+/**
+ * Manages enemies creation, multiplication adn rendering.
+ */
+public final class EnemyManager implements Drawable, Updatable, Resettable, LogSubject, StatSubject {
     private final GamePanel gamePanel;
     private final int startingNumberOfEnemies;
     private final ArrayList<Enemy> allEnemiesList;
@@ -66,7 +70,7 @@ public final class EnemyManager implements Updatable, Resettable, Restartable, L
         this.statObserver.updateStats();
     }
 
-    public List<Entity> getEnemies(int proximity) {
+    public @NotNull List<Entity> getEnemies(int proximity) {
         ArrayList<Entity> proximalEnemies = new ArrayList<>();
         for (var enemy : generatedEnemiesList) {
             if (gamePanel.player.getPosition().distanceTo(enemy.getPosition()) <= proximity) {
@@ -87,7 +91,7 @@ public final class EnemyManager implements Updatable, Resettable, Restartable, L
         }
     }
 
-    public String humanReadable() {
+    public @NotNull String humanReadable() {
         StringBuilder enemiesString = new StringBuilder("<html>");
         for (Enemy enemy : generatedEnemiesList) {
             if (enemy.isDiscovered()) {
@@ -134,11 +138,23 @@ public final class EnemyManager implements Updatable, Resettable, Restartable, L
         increaseEnemiesAtBeaconCreation();
     }
 
+    public void convertToLight() {
+        generatedEnemiesList.stream()
+                            .filter(enemy -> !enemy.isDiscovered())
+                            .forEach(enemy -> enemy.setDiscovered(true));
+        notifyStatObserver();
+    }
+
     public void reset() {
         generatedEnemiesList.clear();
         for (int i = 0; i < startingNumberOfEnemies; i++) {
             addRandomEnemy();
         }
+    }
+
+    public void restart() {
+        reset();
+        notifyStatObserver();
     }
 
     public void draw(Graphics2D g2d) {

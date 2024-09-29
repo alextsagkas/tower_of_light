@@ -10,7 +10,34 @@ import ui.Render;
 
 import java.awt.*;
 
+/**
+ * Aggregate the map tile logic. Specifically, provide way to handle collisions and
+ * visibility status.
+ */
 abstract public class Tile implements Drawable {
+    /**
+     * Enum class that assists in converting {@code .txt} files to objects of type Tile.
+     */
+    public enum TileType {
+        FloorTile,
+        WallTile;
+
+        /**
+         * Get the TileType from an integer. Follows the convention that {@code .txt} files
+         * represent:
+         * <ul>
+         *     <li> FloorTiles with {@code 0} and </li>
+         *     <li> WallTiles with {@code 1}.</li>
+         * </ul>
+         *
+         * @param x the integer number.
+         * @return the TileType the integer corresponds to.
+         */
+        public static TileType fromInteger(int x) {
+            return TileType.values()[x];
+        }
+    }
+
     private final DiscreteMapPosition discreteMapPosition;
 
     private Color invisibleColor;
@@ -27,6 +54,14 @@ abstract public class Tile implements Drawable {
         this.visible = false;
     }
 
+    /**
+     * Create tile based on the TileType. Used for converting {@code .txt} files to
+     * Tile objects.
+     *
+     * @param tileType            the TileType of the tile.
+     * @param discreteMapPosition the position on which the tile resides in.
+     * @return the Tile object created.
+     */
     public static @NotNull Tile createTile(
             @NotNull TileType tileType,
             DiscreteMapPosition discreteMapPosition
@@ -75,7 +110,8 @@ abstract public class Tile implements Drawable {
 
     public void toLight() {}
 
-    public void drawUndiscovered(Graphics2D g2d) {
+
+    private void drawUndiscovered(Graphics2D g2d) {
         Render.drawRectangle(g2d, discreteMapPosition, Colors.undiscoveredColor);
     }
 
@@ -87,6 +123,12 @@ abstract public class Tile implements Drawable {
         Render.drawRectangle(g2d, discreteMapPosition, visibleColor);
     }
 
+    /**
+     * Draw the tile without being concerned for its visibility state.
+     * This is handled internally.
+     *
+     * @param g2d the graphic to draw the component on.
+     */
     public void draw(Graphics2D g2d) {
         if (isVisible()) {
             drawVisible(g2d);
@@ -106,5 +148,4 @@ abstract public class Tile implements Drawable {
                ", visible=" + visible +
                '}';
     }
-
 }
